@@ -23,6 +23,16 @@ Abre `http://localhost:8080`. No se recomienda abrir el HTML por `file://` debid
 
 Preparado para Vercel, GitHub Pages (configurando raíz), Netlify o cualquier hosting estático. En Vercel usa **Framework Preset: Other**, directorio raíz `./`, sin comando de build ni variables de entorno.
 
+## Despliegue continuo (GitHub → Vercel)
+
+El repositorio `andre6545/ecuaserver593` está vinculado al proyecto existente `ecuaserver593` de Vercel.
+
+- **Producción:** https://ecuaserver593.vercel.app/
+- **Rama de producción:** `main`.
+- **Publicación:** al subir nuevos commits a `main`, Vercel inicia un despliegue automáticamente.
+- **Previsualizaciones:** los cambios en otras ramas pueden generar despliegues de vista previa, sujetos a las protecciones del equipo.
+- **Verificación:** revisar que cada despliegue tenga estado `READY` antes de darlo por completado.
+
 ## Personalización
 
 - URLs de Discord: `https://discord.gg/cTk2V9feYF`
