@@ -3,16 +3,295 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#0b0f14">
+  <meta name="description" content="EcuaServer +593. Una pequeña comunidad del juego American Truck Simulator para jugar mutuamente y recorrer las vias de todo el Ecuador.">
   <title>EcuaServer +593</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f14;
+      --surface: #151b23;
+      --surface-high: #1a222d;
+      --yellow: #ffd600;
+      --blue: #0057b8;
+      --red: #e63946;
+      --white: #f7f9fc;
+      --muted: #a4afbc;
+      --edge: rgba(228,238,249,.12);
+      --heading: 'Rajdhani', 'Arial Narrow', system-ui, sans-serif;
+      --body: 'Inter', system-ui, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      color: var(--white);
+      background: var(--bg);
+      font: 400 16px/1.7 var(--body);
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+    }
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(ellipse 52% 58% at 85% 30%, rgba(255,214,0,.095), transparent 76%),
+        radial-gradient(ellipse 36% 50% at 12% 90%, rgba(0,87,184,.10), transparent 75%),
+        linear-gradient(rgba(255,255,255,.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.018) 1px, transparent 1px);
+      background-size: auto,auto,62px 62px,62px 62px;
+      mask-image: linear-gradient(180deg,#000 0%,rgba(0,0,0,.8) 70%,transparent 100%);
+    }
+    a { color: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    :focus-visible { outline: 3px solid var(--yellow); outline-offset: 4px; }
+    ::selection { background: var(--yellow); color: var(--bg); }
+    .flag-line {
+      height: 5px;
+      background: linear-gradient(90deg, var(--yellow) 0 50%, var(--blue) 50% 75%, var(--red) 75% 100%);
+    }
+    .container { width: min(100% - 48px, 1220px); margin-inline: auto; }
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 95px;
+      border-bottom: 1px solid var(--edge);
+      gap: 20px;
+    }
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      font: 700 26px/1 var(--heading);
+      letter-spacing: .02em;
+      text-transform: uppercase;
+    }
+    .brand-symbol {
+      width: 46px;
+      height: 46px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(255,214,0,.45);
+      border-radius: 12px;
+      color: var(--yellow);
+      background: linear-gradient(135deg,rgba(255,214,0,.12),rgba(255,214,0,.015));
+    }
+    .brand strong { color: var(--yellow); }
+    .flag { display:flex; width: 31px; height: 21px; border-radius: 3px; overflow:hidden; box-shadow: 0 0 0 1px rgba(255,255,255,.2); transform: skew(-7deg); }
+    .flag > span { display:block; height:100%; }
+    .flag .y { width: 50%; background: var(--yellow); }
+    .flag .b { width: 25%; background: var(--blue); }
+    .flag .r { width: 25%; background: var(--red); }
+    main { min-height: calc(100vh - 101px); display: flex; align-items: center; padding-block: clamp(45px, 7vw, 100px); }
+    .hero { display:grid; grid-template-columns: 1.13fr .87fr; align-items:center; gap: clamp(38px,6vw,95px); width:100%; }
+    .hero-copy { min-width:0; }
+    .accent-rule { display:flex; align-items:center; gap:12px; color:var(--yellow); }
+    .accent-rule .rule { display:block; width: 52px; height:3px; background:var(--yellow); border-radius:4px; }
+    .accent-rule .dots { display:flex; gap:5px; }
+    .accent-rule .dots i { display:block; width:6px; height:6px; transform:rotate(45deg); background:var(--yellow); opacity:.6; }
+    h1 {
+      margin: 23px 0 20px;
+      text-transform: uppercase;
+      font: 700 clamp(65px, 7vw, 103px)/.82 var(--heading);
+      letter-spacing: -.045em;
+      text-wrap: balance;
+    }
+    h1 span { display:block; color:var(--yellow); margin-top:10px; text-shadow:0 14px 68px rgba(255,214,0,.17); }
+    .about {
+      margin-top: clamp(36px,5vw,65px);
+      padding-left: 22px;
+      border-left: 3px solid var(--yellow);
+      max-width: 580px;
+    }
+    h2 { font: 700 25px/1.1 var(--heading); letter-spacing: .045em; text-transform: uppercase; margin: 0 0 13px; }
+    .about p { margin:0; color:#c5cfdb; font-size:15px; line-height:1.95; max-width: 56ch; }
+    .actions { display:flex; flex-wrap:wrap; gap: 12px; margin-top: 36px; }
+    .action {
+      min-height:52px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:11px;
+      padding: 12px 23px;
+      border-radius: 10px;
+      border:1px solid rgba(255,255,255,.17);
+      background:rgba(255,255,255,.035);
+      text-decoration:none;
+      font: 700 19px/1 var(--heading);
+      text-transform:uppercase;
+      letter-spacing:.025em;
+      transition: transform .22s ease, background .22s ease, box-shadow .22s ease, border-color .22s ease;
+    }
+    .action svg { flex:none; width:18px; height:18px; stroke:currentColor; stroke-width:2; fill:none; }
+    .action.primary { background:var(--yellow); color:#101317; border-color:var(--yellow); box-shadow: 0 9px 35px rgba(255,214,0,.13); }
+    .action.secondary { border-color:rgba(255,214,0,.38); color:var(--yellow); }
+    .action.tertiary { color:#e9eff8; }
+    .action:hover { transform: translateY(-3px); border-color:var(--yellow); box-shadow: 0 15px 35px rgba(0,0,0,.28); }
+    .action.primary:hover { background:#ffe344; box-shadow:0 12px 40px rgba(255,214,0,.22); }
+    .info-panel {
+      position:relative;
+      isolation:isolate;
+      overflow:hidden;
+      min-height: 520px;
+      padding: clamp(24px,4.5vw,42px);
+      border:1px solid rgba(245,248,253,.16);
+      border-radius: 24px;
+      background: linear-gradient(155deg,rgba(30,40,52,.94) 0%,rgba(17,24,33,.97) 63%,rgba(12,17,24,.98) 100%);
+      box-shadow: 0 28px 90px rgba(0,0,0,.34), inset 0 1px rgba(255,255,255,.07);
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+    .info-panel::before {
+      content: '';
+      position:absolute;
+      inset:0;
+      z-index:-1;
+      background:radial-gradient(circle at 68% 21%,rgba(255,214,0,.16),transparent 47%);
+    }
+    .panel-top {display:flex; align-items:center; justify-content:space-between; gap:18px;}
+    .panel-line {height:5px;width:95px;border-radius:3px;background:linear-gradient(90deg,var(--yellow) 0 52%, var(--blue) 52% 75%,var(--red) 75%);}
+    .panel-screws { display:flex; gap:12px; }
+    .panel-screws i {width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15);box-shadow:inset 1px 1px 1px rgba(0,0,0,.6);}
+    .truck-art { align-self:center; width:min(100%, 350px); margin: 17px 0 12px; opacity:.9; filter:drop-shadow(0 0 28px rgba(255,214,0,.08)); }
+    .truck-art svg {display:block;width:100%;height:auto;}
+    .specs {border-top:1px solid var(--edge);}
+    .spec { padding:22px 0; display:flex; flex-direction:column; gap:7px; border-bottom:1px solid var(--edge); }
+    .spec:last-child {border-bottom:0;padding-bottom:0;}
+    .spec-label {color:var(--muted);text-transform:uppercase;letter-spacing:.14em;font:700 13px/1.2 var(--body);}
+    .spec-value {color:var(--white);font:700 clamp(23px,3vw,34px)/1.18 var(--heading);overflow-wrap:anywhere;}
+    .id-row {display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .copy-btn {cursor:pointer;flex:none;border:1px solid rgba(255,214,0,.27);border-radius:9px;background:rgba(255,214,0,.08);color:var(--yellow);padding:10px;display:inline-grid;place-items:center;transition:background .2s ease,transform .2s ease;}
+    .copy-btn svg {width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.8;}
+    .copy-btn:hover {background:rgba(255,214,0,.18);transform:translateY(-2px);}
+    .copy-notice {min-height:1.4em;color:var(--yellow);font-size:12px;margin-top:4px;}
+    .spec-version {color:var(--yellow);}
+    @media(max-width:980px) {
+      main {padding-block:55px 70px;}
+      .hero {grid-template-columns:1fr;gap:45px;}
+      h1 {font-size:clamp(66px,12vw,96px);}
+      .info-panel {min-height:auto;gap:14px;}
+      .truck-art {width:min(66%,300px);}
+    }
+    @media(max-width:600px) {
+      .container {width:min(100% - 34px,1220px);}
+      .topbar {min-height:77px;}
+      .brand {font-size:23px;gap:10px;}
+      .brand-symbol {width:40px;height:40px;}
+      .flag {width:24px;height:16px;}
+      main {padding-block:43px 65px;}
+      .hero {gap:40px;}
+      h1 {font-size:clamp(50px,14vw,76px);margin-top:20px;}
+      .about {margin-top:32px;padding-left:16px;}
+      .about p {font-size:14px;line-height:1.85;}
+      .actions {display:grid;grid-template-columns:1fr 1fr;margin-top:28px;}
+      .action {padding-inline:12px;font-size:17px;}
+      .action.primary {grid-column:1 / -1;}
+      .info-panel {padding:25px; border-radius:18px;}
+      .truck-art {width:min(80%,260px);}
+    }
+    @media(max-width:360px) {
+      .actions {grid-template-columns:1fr;}
+      .action.primary {grid-column:auto;}
+      .brand {font-size:20px;}
+      .flag {display:none;}
+    }
+    @media(prefers-reduced-motion:reduce) {
+      html {scroll-behavior:auto;}
+      *,*::before,*::after {transition-duration:.01ms!important;animation-duration:.01ms!important;}
+    }
+  </style>
 </head>
 <body>
-  <h1>EcuaServer +593</h1>
-  <p><strong>ID:</strong> 85568392936670275/101</p>
-  <h2>¿Quiénes somos?</h2>
-  <p>EcuaServer +593 Una pequeña comunidad que busca crecer y formar una comunidad del juego American Truck Simulator, jugar mutuamente y recorrer las vias de todo el Ecuador.</p>
-  <p><strong>Versión:</strong> Ultima Versión compatible</p>
-  <p><strong>Discord:</strong> <a href="https://discord.gg/cTk2V9feYF">https://discord.gg/cTk2V9feYF</a></p>
-  <p><strong>Compra Aqui:</strong> <a href="https://wa.link/k18cir">https://wa.link/k18cir</a></p>
-  <p><strong>Soporte:</strong> <a href="https://discord.gg/cTk2V9feYF">https://discord.gg/cTk2V9feYF</a>.</p>
+  <div class="flag-line" aria-hidden="true"></div>
+  <div class="container">
+    <header class="topbar">
+      <a class="brand" href="/" aria-label="EcuaServer +593">
+        <span class="brand-symbol" aria-hidden="true">
+          <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M2 6h13v11H2zM15 10h4l3 4v3h-7zM6 17a2 2 0 1 0 4 0M17 17a2 2 0 1 0 4 0M2 10h13"/>
+          </svg>
+        </span>
+        <span>ECUASERVER <strong>+593</strong></span>
+      </a>
+      <div class="flag" aria-hidden="true"><span class="y"></span><span class="b"></span><span class="r"></span></div>
+    </header>
+    <main>
+      <div class="hero">
+        <section class="hero-copy" aria-labelledby="site-title">
+          <div class="accent-rule" aria-hidden="true"><span class="rule"></span><span class="dots"><i></i><i></i><i></i></span></div>
+          <h1 id="site-title">EcuaServer <span>+593</span></h1>
+          <div class="about">
+            <h2>¿Quiénes somos?</h2>
+            <p>EcuaServer +593 Una pequeña comunidad que busca crecer y formar una comunidad del juego American Truck Simulator, jugar mutuamente y recorrer las vias de todo el Ecuador.</p>
+          </div>
+          <div class="actions" aria-label="Enlaces">
+            <a class="action primary" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Discord <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-7-7 7 7-7 7"/></svg></a>
+            <a class="action secondary" href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer">Compra Aqui <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M8 5h11v11"/></svg></a>
+            <a class="action tertiary" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Soporte <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 19 19 5M8 5h11v11"/></svg></a>
+          </div>
+        </section>
+        <aside class="info-panel" aria-label="Información de EcuaServer +593">
+          <div class="panel-top" aria-hidden="true"><div class="panel-line"></div><div class="panel-screws"><i></i><i></i></div></div>
+          <div class="truck-art" aria-hidden="true">
+            <svg viewBox="0 0 390 210" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs><linearGradient id="truckLine" x1="0" y1="0" x2="390" y2="210"><stop stop-color="#FFD600"/><stop offset="1" stop-color="#7C6B22"/></linearGradient></defs>
+              <path d="M21 145h355" stroke="#FFD600" opacity=".18" stroke-width="1"/><path d="M50 154h-24m-9 0H4m372 0h10" stroke="#FFD600" opacity=".5" stroke-width="2" stroke-linecap="round"/>
+              <path d="M73 123V70c0-8 6-14 14-14h139c6 0 11 4 11 10v76H73m164-67h57c9 0 17 5 22 13l26 37v18h18c5 0 8 4 8 8v12h-26m-26 0h-97m-28 0H107m-30 0H40v-13h33" stroke="url(#truckLine)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M247 89h47l25 36h-72V89Zm-8 43h103M89 70h129M89 84h131M89 98h131M89 112h131M89 126h131M239 145H73" stroke="url(#truckLine)" opacity=".65" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M59 154H40m335 0h-13" stroke="#FFD600" stroke-width="5" stroke-linecap="round"/><path d="M257 91v36m64 3v13m-59 1h22" stroke="#FFD600" opacity=".65" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="92" cy="162" r="19" fill="#131B23" stroke="#FFD600" stroke-width="3"/><circle cx="92" cy="162" r="7" stroke="#FFD600" opacity=".8" stroke-width="2"/>
+              <circle cx="201" cy="162" r="19" fill="#131B23" stroke="#FFD600" stroke-width="3"/><circle cx="201" cy="162" r="7" stroke="#FFD600" opacity=".8" stroke-width="2"/>
+              <circle cx="328" cy="162" r="19" fill="#131B23" stroke="#FFD600" stroke-width="3"/><circle cx="328" cy="162" r="7" stroke="#FFD600" opacity=".8" stroke-width="2"/>
+              <path d="M55 40h120m14 0h15M65 30h90m100 15h30" stroke="#FFD600" opacity=".23" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="specs">
+            <div class="spec">
+              <span class="spec-label">ID</span>
+              <div class="id-row"><span class="spec-value" id="server-id">85568392936670275/101</span><button type="button" class="copy-btn" id="copy-id" aria-label="Copiar ID" title="Copiar ID"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h3"/></svg></button></div>
+              <span class="copy-notice" id="copy-notice" role="status" aria-live="polite"></span>
+            </div>
+            <div class="spec">
+              <span class="spec-label">Versión</span>
+              <span class="spec-value spec-version">Ultima Versión compatible</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </main>
+  </div>
+  <script>
+    (() => {
+      const button = document.getElementById('copy-id');
+      const notice = document.getElementById('copy-notice');
+      const id = document.getElementById('server-id').textContent.trim();
+      let resetTimer;
+      button.addEventListener('click', async () => {
+        try {
+          if (!navigator.clipboard || !window.isSecureContext) throw new Error('Clipboard no disponible');
+          await navigator.clipboard.writeText(id);
+          notice.textContent = 'ID copiado';
+        } catch {
+          const selection = window.getSelection();
+          const range = document.createRange();
+          range.selectNodeContents(document.getElementById('server-id'));
+          selection.removeAllRanges(); selection.addRange(range);
+          notice.textContent = 'Selecciona el ID para copiarlo';
+        }
+        clearTimeout(resetTimer);
+        resetTimer = setTimeout(() => { notice.textContent = ''; }, 3300);
+      });
+    })();
+  </script>
 </body>
 </html>
