@@ -42,6 +42,16 @@ jobs:
               img.thumbnail(size,Image.Resampling.LANCZOS)
               img.save(target/output,'WEBP',quality=82,method=6)
               print(output,(target/output).stat().st_size)
+          from PIL import ImageOps
+          banner=Image.open(source/'banner.png').convert('RGB')
+          social=ImageOps.fit(banner,(1200,630),method=Image.Resampling.LANCZOS,centering=(.5,.5))
+          social.save(target/'social-card.jpg',quality=86,optimize=True,progressive=True)
+          emblem=Image.open(source/'logo.png').convert('RGBA')
+          emblem.thumbnail((220,110),Image.Resampling.LANCZOS)
+          favicon=Image.new('RGBA',(128,128),'#0b1016')
+          emblem.thumbnail((122,122),Image.Resampling.LANCZOS)
+          favicon.alpha_composite(emblem,((128-emblem.width)//2,(128-emblem.height)//2))
+          favicon.save(target/'favicon.png',optimize=True)
           PY
       - name: Guardar imágenes dentro del proyecto
         run: |
