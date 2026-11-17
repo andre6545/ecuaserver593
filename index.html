@@ -342,6 +342,67 @@
       .server-status-field {padding:18px 13px}
       .server-status-value {font-size:27px}
     }
+
+    /* Panel de datos de Starbase: nuevas tarjetas y gráficos de solo lectura */
+    .server-status-head-actions{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+    .server-refresh{display:inline-flex;align-items:center;gap:8px;justify-content:center;min-height:38px;
+      padding:8px 13px;background:rgba(255,214,0,.09);border:1px solid rgba(255,214,0,.4);
+      border-radius:10px;color:var(--yellow);font:700 12px var(--body);cursor:pointer}
+    .server-refresh:hover{background:rgba(255,214,0,.18)}
+    .server-refresh:disabled{opacity:.5;cursor:wait}
+    .server-refresh svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2}
+    .server-refresh[aria-busy="true"] svg{animation:server-spin 1s linear infinite}
+    @keyframes server-spin{to{transform:rotate(360deg)}}
+    .server-notice{margin:0 0 22px;border:1px solid rgba(255,214,0,.55);border-left:4px solid var(--yellow);
+      border-radius:12px;background:rgba(255,214,0,.08);padding:14px 18px}
+    .server-notice strong{display:block;color:var(--yellow);font:700 14px/1.3 var(--body);margin-bottom:5px}
+    .server-notice p{margin:0;line-height:1.65;color:#f4f0db;overflow-wrap:anywhere;white-space:pre-wrap}
+    .server-notice[hidden],.server-occupancy-bar[hidden]{display:none!important}
+    .server-occupancy-text{display:block;font:700 24px/1.3 var(--heading);color:var(--white);overflow-wrap:anywhere}
+    .server-occupancy-bar{height:8px;border-radius:100px;background:rgba(255,255,255,.1);margin-top:12px;overflow:hidden}
+    .server-occupancy-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--yellow),#87d8af);
+      border-radius:100px;transition:width .3s ease}
+    .server-history{border-top:1px solid var(--edge);margin-top:28px;padding-top:24px}
+    .server-history-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:20px}
+    .server-history-heading h3{font:700 28px/1 var(--heading);margin:0}
+    .server-period-buttons{display:inline-flex;align-items:center;border:1px solid rgba(255,255,255,.17);border-radius:10px;padding:4px;gap:3px}
+    .server-period-buttons button{border:0;background:transparent;color:var(--muted);padding:7px 12px;border-radius:7px;
+      cursor:pointer;font:700 12px var(--body)}
+    .server-period-buttons button.active,.server-period-buttons button[aria-pressed="true"]{background:rgba(255,214,0,.18);color:var(--yellow)}
+    .server-history-metrics{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-bottom:20px}
+    .server-history-metric{min-width:0;background:rgba(255,255,255,.028);border:1px solid rgba(255,255,255,.07);
+      border-radius:12px;padding:15px}
+    .server-history-metric span{display:block;color:var(--muted);font:700 11px/1.4 var(--body);text-transform:uppercase;letter-spacing:.05em}
+    .server-history-metric strong{display:block;margin-top:7px;color:var(--white);font:700 29px/1.1 var(--heading);font-variant-numeric:tabular-nums}
+    .server-history-graphs{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+    .server-history-graphs h4{font:700 17px/1.1 var(--heading);margin:0 0 13px;color:#e5ecf3}
+    .server-history-panel{background:rgba(0,0,0,.15);border:1px solid rgba(255,255,255,.07);padding:17px;border-radius:14px;min-width:0}
+    .server-history-track,.server-player-track{display:flex;align-items:stretch;gap:4px;height:90px;width:100%}
+    .server-availability-bar,.server-player-bar{flex:1 1 0;min-width:3px;display:flex;align-items:flex-end}
+    .server-availability-bar-fill{display:block;height:100%;width:100%;border-radius:4px;background:rgba(150,162,178,.25)}
+    .server-availability-bar-fill[data-state="online"]{background:#49c990}
+    .server-availability-bar-fill[data-state="offline"]{background:#e26970}
+    .server-availability-bar-fill[data-state="mixed"]{background:linear-gradient(180deg,#49c990 0 50%,#e26970 50% 100%)}
+    .server-availability-bar-fill[data-state="unknown"]{background:repeating-linear-gradient(45deg,rgba(162,175,193,.16) 0 4px,rgba(162,175,193,.05) 4px 8px)}
+    .server-player-bar-fill{display:block;width:100%;border-radius:4px 4px 1px 1px;background:var(--yellow);min-height:3px;opacity:.82}
+    .server-player-bar-fill[data-state="unknown"]{background:rgba(162,175,193,.2)}
+    .server-chart-note{font-size:12px;color:var(--muted);margin:12px 0 0}
+    .server-history-legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:12px;color:var(--muted);font-size:11px}
+    .server-history-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+    .server-history-legend .online{background:#49c990}.server-history-legend .offline{background:#e26970}
+    .server-history-legend .unknown{background:#677788}
+    @media(max-width:780px){.server-history-graphs{grid-template-columns:1fr}}
+    @media(max-width:580px){
+      .server-status-head-actions{width:100%;justify-content:space-between}
+      .server-history-metrics{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+      .server-history-metric{padding:11px 8px}
+      .server-history-metric span{font-size:10px}
+      .server-history-metric strong{font-size:25px}
+      .server-status-head{margin-bottom:19px}
+      .server-occupancy-text{font-size:20px}
+      .server-history-panel{padding:12px}
+    }
+    @media(prefers-reduced-motion:reduce){.server-refresh[aria-busy="true"] svg{animation:none}}
   </style>
 </head>
 <body>
@@ -407,7 +468,16 @@
       <div class="server-status-card">
         <div class="server-status-head">
           <h2 id="server-status-heading">Estado del <span>servidor</span></h2>
-          <span id="server-status-state" class="server-status-pill" data-state="unconfigured" role="status" aria-live="polite">Sin configurar</span>
+          <div class="server-status-head-actions">
+            <span id="server-status-state" class="server-status-pill" data-state="unconfigured" role="status" aria-live="polite">Sin configurar</span>
+            <button id="server-refresh" class="server-refresh" type="button" aria-label="Consultar estado del servidor de nuevo">
+              <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-5L4 8m0-4v4h4M4 13a8 8 0 0 0 14 5l2-2m0 4v-4h-4"/></svg>Actualizar
+            </button>
+          </div>
+        </div>
+        <div id="server-notice" class="server-notice" role="status" hidden>
+          <strong>Aviso de mantenimiento</strong>
+          <p id="server-notice-text"></p>
         </div>
         <div class="server-status-grid">
           <div class="server-status-field server-players-field" id="server-players-field" data-players="unknown">
@@ -422,8 +492,47 @@
             <span class="server-status-label">Juego</span>
             <span class="server-status-value">American Truck Simulator</span>
           </div>
+          <div class="server-status-field">
+            <span class="server-status-label">Tiempo activo</span>
+            <span class="server-status-value" id="server-uptime">—</span>
+          </div>
+          <div class="server-status-field">
+            <span class="server-status-label">Ocupación del servidor</span>
+            <span class="server-occupancy-text" id="server-occupancy-text">Capacidad no disponible</span>
+            <div class="server-occupancy-bar" id="server-occupancy-bar" role="progressbar" aria-label="Porcentaje de ocupación" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" hidden>
+              <div id="server-occupancy-fill" class="server-occupancy-fill"></div>
+            </div>
+          </div>
         </div>
         <p class="server-status-meta" id="server-status-updated">Los datos se mostrarán cuando el servidor esté conectado.</p>
+        <section class="server-history" aria-labelledby="server-history-title">
+          <div class="server-history-heading">
+            <h3 id="server-history-title">Historial de actividad</h3>
+            <div class="server-period-buttons" aria-label="Período del historial">
+              <button type="button" class="active" data-history-period="24" aria-pressed="true">24 horas</button>
+              <button type="button" data-history-period="168" aria-pressed="false">7 días</button>
+            </div>
+          </div>
+          <div class="server-history-metrics">
+            <div class="server-history-metric"><span>Disponibilidad observada</span><strong id="server-availability">—</strong></div>
+            <div class="server-history-metric"><span>Pico de jugadores</span><strong id="server-peak">—</strong></div>
+            <div class="server-history-metric"><span>Promedio de jugadores</span><strong id="server-average">—</strong></div>
+          </div>
+          <div class="server-history-graphs">
+            <div class="server-history-panel">
+              <h4>Disponibilidad</h4>
+              <div class="server-history-track" id="server-history-track" role="img" aria-label="Historial de disponibilidad"></div>
+              <div class="server-history-legend"><span><i class="online"></i>En línea</span><span><i class="offline"></i>Sin conexión</span><span><i class="unknown"></i>Sin dato</span></div>
+            </div>
+            <div class="server-history-panel">
+              <h4>Actividad de jugadores</h4>
+              <div class="server-player-track" id="server-player-track" role="img" aria-label="Historial de jugadores conectados"></div>
+              <p class="server-chart-note">Mayor número de jugadores observado por intervalo</p>
+            </div>
+          </div>
+          <p class="server-chart-note" id="server-history-info">Preparando historial de actividad…</p>
+          <p class="server-chart-note">Muestras periódicas de 5 minutos. Las horas sin datos no se consideran desconexiones.</p>
+        </section>
       </div>
     </section>
 
@@ -566,56 +675,6 @@
     })();
   </script>
 
-  <script>
-    (() => {
-      const badge = document.getElementById('server-status-state');
-      const players = document.getElementById('server-status-players');
-      const playersField = document.getElementById('server-players-field');
-      const playersSubtitle = document.getElementById('server-players-subtitle');
-      function displayPlayers(value) {
-        if (!Number.isInteger(value) || value < 0) {
-          players.textContent = '—';
-          playersField.dataset.players = 'unknown';
-          playersSubtitle.textContent = 'Dato no disponible';
-        } else {
-          players.textContent = String(value);
-          playersField.dataset.players = value > 0 ? 'active' : 'empty';
-          playersSubtitle.textContent = value === 0 ? 'Sin jugadores conectados' : value === 1 ? '1 jugador en el servidor' : value + ' jugadores en el servidor';
-        }
-      }
-      const updated = document.getElementById('server-status-updated');
-      if (!badge || !players || !updated) return;
-      const labels = {
-        online:'En línea', offline:'Desconectado', transitioning:'Cambiando de estado',
-        unconfigured:'Sin configurar', unavailable:'No disponible'
-      };
-      async function loadStatus() {
-        try {
-          const response = await fetch('/api/server-status', {cache:'no-store'});
-          if (!response.ok) throw Error('No disponible');
-          const data = await response.json();
-          const state = Object.hasOwn(labels,data.status) ? data.status : 'unavailable';
-          badge.dataset.state = state;
-          badge.textContent = labels[state];
-          displayPlayers(data.players);
-          if (state === 'unconfigured') {
-            updated.textContent = 'Los datos se mostrarán cuando el servidor esté conectado.';
-          } else if (data.checkedAt && !isNaN(Date.parse(data.checkedAt))) {
-            updated.textContent = 'Última comprobación: ' + new Date(data.checkedAt).toLocaleTimeString('es-EC', {hour:'2-digit',minute:'2-digit'});
-          } else {
-            updated.textContent = 'No fue posible consultar los datos del servidor.';
-          }
-        } catch {
-          badge.dataset.state='unavailable';
-          badge.textContent='No disponible';
-          displayPlayers(null);
-          updated.textContent='No fue posible consultar los datos del servidor.';
-        }
-      }
-      loadStatus();
-      document.addEventListener('visibilitychange', () => { if (!document.hidden) loadStatus(); });
-      setInterval(() => { if (!document.hidden) loadStatus(); }, 60000);
-    })();
-  </script>
+  <script defer src="/server-dashboard.js"></script>
 </body>
 </html>
