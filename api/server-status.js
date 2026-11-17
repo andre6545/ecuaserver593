@@ -1,65 +1,74 @@
-// Endpoint de solo lectura para EcuaServer +593.
-// Credenciales exclusivamente en variables privadas de Vercel.
+// EcuaServer +593 · Consulta de solo lectura a Starbase.
+// Nunca se exponen credenciales ni la respuesta original del hosting.
 const PANEL_ORIGIN = 'https://games.bisecthosting.com';
+const validInt = (value, max) => Number.isInteger(value) && value >= 0 && value <= max ? value : null;
 
-function send(res, data, statusCode = 200) {
-  res.setHeader('Content-Type', 'application/json; charset=utf-8');
-  res.setHeader('Cache-Control', 'public, s-maxage=60, stale-while-revalidate=120');
-  res.setHeader('X-Content-Type-Options', 'nosniff');
-  return res.status(statusCode).json(data);
-}
-
-async function getJSON(url, token) {
-  const response = await fetch(url, {
+async function getJSON(path, token) {
+  const r = await fetch(path, {
     method: 'GET',
     headers: { Authorization: 'Bearer ' + token, Accept: 'application/json' },
-    signal: AbortSignal.timeout(6500)
+    signal: AbortSignal.timeout(7000)
   });
-  if (!response.ok) throw new Error('Upstream status ' + response.status);
-  return response.json();
+  if (!r.ok) throw Error('Starbase no disponible');
+  return r.json();
+}
+
+export async function queryStatus() {
+  const token = process.env.BISECT_API_TOKEN;
+  const id = process.env.BISECT_SERVER_ID;
+  const fallback = { status:'unavailable', players:null, uptimeSeconds:null, capacity:null, checkedAt:null };
+  if (!token || !id) return { ...fallback, status:'unconfigured' };
+  if (!/^ptlc_[a-zA-Z0-9]+$/.test(token) || !/^[a-zA-Z0-9_-]{6,64}$/.test(id)) return fallback;
+
+  const url = PANEL_ORIGIN + '/api/client/servers/' + encodeURIComponent(id);
+  try {
+    const body = await getJSON(url + '/resources', token);
+    const a = body?.attributes || {};
+    const state = a.current_state ?? a.state;
+    const status = state === 'running' ? 'online'
+      : ['offline','stopped'].includes(state) ? 'offline'
+      : ['starting','stopping'].includes(state) ? 'transitioning' : 'unavailable';
+    const uptimeMs = a.resources?.uptime;
+    const uptimeSeconds = status === 'online' && Number.isFinite(uptimeMs) && uptimeMs >= 0
+      ? validInt(Math.floor(uptimeMs / 1000), 315360000) : null;
+
+    let players = null, capacity = null;
+    if (status === 'online') {
+      const [online, details] = await Promise.allSettled([
+        getJSON(url + '/player/online', token),
+        getJSON(url, token)
+      ]);
+      if (online.status === 'fulfilled') {
+        const data = online.value;
+        if (Array.isArray(data?.data)) players = validInt(data.data.length, 5000);
+        else if (Array.isArray(data?.attributes?.players)) players = validInt(data.attributes.players.length, 5000);
+        else players = validInt(data?.attributes?.online_players, 5000);
+      }
+      if (details.status === 'fulfilled') {
+        const b = details.value?.attributes || {};
+        // Solo campos que explícitamente designan un límite de jugadores;
+        // no inferir capacidad desde memoria RAM, CPU o límites de funciones.
+        const candidates = [b.max_players,b.player_limit,b.game?.max_players,b.configuration?.max_players];
+        for (const n of candidates) {
+          if (Number.isInteger(n) && n > 0 && n <= 5000) { capacity=n; break; }
+        }
+      }
+    }
+    return { status, players, uptimeSeconds, capacity, checkedAt:new Date().toISOString() };
+  } catch {
+    return fallback;
+  }
 }
 
 export default async function handler(req, res) {
+  res.setHeader('X-Content-Type-Options','nosniff');
+  res.setHeader('Cache-Control',req.query?.refresh === '1'
+    ? 'public, s-maxage=30, stale-while-revalidate=30'
+    : 'public, s-maxage=60, stale-while-revalidate=120');
   if (req.method !== 'GET') {
-    res.setHeader('Allow', 'GET');
-    return res.status(405).json({ status: 'unavailable', players: null });
+    res.setHeader('Allow','GET');
+    return res.status(405).json({status:'unavailable',players:null,capacity:null,uptimeSeconds:null,checkedAt:null});
   }
-
-  const token = process.env.BISECT_API_TOKEN;
-  const serverId = process.env.BISECT_SERVER_ID;
-  if (!token || !serverId) {
-    return send(res, { status: 'unconfigured', players: null, checkedAt: null });
-  }
-  // El identificador de Starbase NO es el ID de sesión de ATS.
-  if (!/^[a-zA-Z0-9_-]{6,64}$/.test(serverId) || !/^ptlc_[a-zA-Z0-9]+$/.test(token)) {
-    return send(res, { status: 'unavailable', players: null, checkedAt: null });
-  }
-
-  const base = PANEL_ORIGIN + '/api/client/servers/' + encodeURIComponent(serverId);
-  try {
-    const data = await getJSON(base + '/resources', token);
-    const state = data?.attributes?.current_state ?? data?.attributes?.state ?? null;
-    const status = state === 'running' ? 'online'
-      : ['offline', 'stopped'].includes(state) ? 'offline'
-      : ['starting', 'stopping'].includes(state) ? 'transitioning'
-      : 'unavailable';
-
-    let players = null;
-    if (status === 'online') {
-      try {
-        const result = await getJSON(base + '/player/online', token);
-        if (Array.isArray(result?.data)) players = result.data.length;
-        else if (Array.isArray(result?.attributes?.players)) players = result.attributes.players.length;
-        else if (Number.isInteger(result?.attributes?.online_players) && result.attributes.online_players >= 0) {
-          players = result.attributes.online_players;
-        }
-      } catch {
-        // La disponibilidad de /player/online depende de las funciones del juego.
-        // No sustituir datos desconocidos por cero.
-      }
-    }
-    return send(res, { status, players, checkedAt: new Date().toISOString() });
-  } catch {
-    return send(res, { status: 'unavailable', players: null, checkedAt: null });
-  }
+  const data = await queryStatus();
+  return res.status(200).json(data);
 }
