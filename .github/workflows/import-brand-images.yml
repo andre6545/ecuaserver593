@@ -1,0 +1,54 @@
+name: Preparar imágenes oficiales EcuaServer
+on:
+  push:
+    paths:
+      - '.github/workflows/import-brand-images.yml'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - name: Preparar herramientas
+        run: python -m pip install --quiet pillow
+      - name: Descargar archivos oficiales y optimizar
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets/brand /tmp/ecuabrand
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://d2ol7oe51mr4n9.cloudfront.net/user_3LTQsuryhXDZk0MvvY45dRDXoeX/5fe6632e-0a7a-4ab7-b98d-e23994849b8e.png" -o /tmp/ecuabrand/logo.png
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://d2ol7oe51mr4n9.cloudfront.net/user_3LTQsuryhXDZk0MvvY45dRDXoeX/2c755993-b415-4bd0-b745-99b5b0b31b5c.png" -o /tmp/ecuabrand/road.png
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://d2ol7oe51mr4n9.cloudfront.net/user_3LTQsuryhXDZk0MvvY45dRDXoeX/777bdea1-9c69-454f-a0ee-a7ce0ac62347.png" -o /tmp/ecuabrand/banner.png
+          curl --fail --location --retry 3 --silent --show-error \
+            "https://d2ol7oe51mr4n9.cloudfront.net/user_3LTQsuryhXDZk0MvvY45dRDXoeX/e48810c9-ebfa-4951-95ba-b77cd35640f4.gif" -o assets/brand/animated-logo.gif
+          python - <<'PY'
+          from PIL import Image
+          from pathlib import Path
+          source = Path('/tmp/ecuabrand')
+          target = Path('assets/brand')
+          for stem, output, size in [
+            ('logo', 'logo.webp', (960, 480)),
+            ('road', 'road-scene.webp', (1150, 1150)),
+            ('banner', 'hero-banner.webp', (1672, 941)),
+          ]:
+              img=Image.open(source/(stem+'.png')).convert('RGBA')
+              img.thumbnail(size,Image.Resampling.LANCZOS)
+              img.save(target/output,'WEBP',quality=82,method=6)
+              print(output,(target/output).stat().st_size)
+          PY
+      - name: Guardar imágenes dentro del proyecto
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add assets/brand/
+          if ! git diff --cached --quiet; then
+            git commit -m "assets: guardar imágenes originales optimizadas para EcuaServer [skip ci]"
+            git push origin HEAD:main
+          fi
