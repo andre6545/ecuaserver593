@@ -5,7 +5,10 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0b0f14">
 <title>Panel administrativo | EcuaServer +593</title>
-<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="icon" type="image/png" href="/assets/brand/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:dark;--bg:#0b0f14;--panel:#151b23;--yellow:#ffd600;--muted:#a6b1bf;--edge:#39404a}
 *{box-sizing:border-box}body{margin:0;padding:32px 20px 80px;background:radial-gradient(ellipse at 70% 0,rgba(255,214,0,.075),transparent 45%),var(--bg);font:16px/1.55 system-ui,sans-serif;color:#f6f8fb}
@@ -25,12 +28,34 @@ label{font-weight:600;display:block;margin-bottom:6px}input{display:block;width:
 .notice-check input{width:19px;height:19px;min-height:19px;margin:0;accent-color:var(--yellow)}
 textarea{display:block;width:100%;max-width:100%;min-height:104px;resize:vertical;background:#0c131b;color:white;border:1px solid #4a5563;border-radius:10px;padding:12px 14px;font:inherit}
 textarea:focus{outline:2px solid var(--yellow);outline-offset:2px}
+
+/* Identidad visual oficial: discreta, sobria y consistente con la web pública */
+:root{--bg:#0b0d11;--panel:#171b21;--yellow:#e6bf72;--muted:#aeb5bd;--edge:#3a4147}
+body{background:radial-gradient(ellipse at 85% 0,rgba(230,191,114,.06),transparent 38%),#0b0d11;font:400 14px/1.65 'Manrope',system-ui,sans-serif}
+main{max-width:970px}
+header{padding:8px 0 26px;margin:0 0 27px;border-bottom:1px solid rgba(236,224,201,.14)}
+.admin-brand{display:flex;align-items:center;gap:16px}
+.admin-brand img{display:block;width:104px;height:auto;max-height:68px;object-fit:contain}
+.admin-brand h1{font:800 clamp(31px,4vw,43px)/1 'Barlow Condensed',sans-serif;letter-spacing:.01em;margin:0}
+.admin-brand p{color:var(--muted);font:500 12px/1.4 'Manrope',sans-serif;margin:7px 0 0}
+h2{font:700 27px/1.1 'Barlow Condensed',sans-serif;letter-spacing:.01em}
+.panel{border-radius:10px;border-color:rgba(236,224,201,.14);background:#171b21;box-shadow:0 15px 40px rgba(0,0,0,.13)}
+button{border-radius:6px;font:700 13px 'Manrope',sans-serif;transition:border-color .2s,background .2s}
+button.primary{color:#161310}
+input,textarea{border-radius:6px;background:#11161c}
+.photo-item{background:#11161b;border-radius:7px}
+a{color:var(--yellow)}
+a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+@media(max-width:560px){body{padding:19px 14px 70px}.admin-brand{gap:9px}.admin-brand img{width:78px}.admin-brand h1{font-size:29px}.admin-brand p{font-size:10px}header{gap:10px}.panel{padding:19px}h2{font-size:25px}}
 </style>
 </head>
 <body>
 <main>
 <header>
- <h1>EcuaServer <span>+593</span></h1>
+ <div class="admin-brand">
+  <img src="/assets/brand/logo.webp" width="104" height="52" alt="Logotipo EcuaServer +593" decoding="async">
+  <div><h1>EcuaServer <span>+593</span></h1><p>Panel de gestión de la comunidad</p></div>
+ </div>
  <a href="/#galeria">Volver a la galería</a>
 </header>
 <section id="login-section" class="panel" aria-labelledby="login-title">
