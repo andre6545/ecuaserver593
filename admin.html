@@ -1,0 +1,204 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b0f14">
+<title>Administrar galería | EcuaServer +593</title>
+<style>
+:root{color-scheme:dark;--bg:#0b0f14;--panel:#151b23;--yellow:#ffd600;--muted:#a6b1bf;--edge:#39404a}
+*{box-sizing:border-box}body{margin:0;padding:32px 20px 80px;background:radial-gradient(ellipse at 70% 0,rgba(255,214,0,.075),transparent 45%),var(--bg);font:16px/1.55 system-ui,sans-serif;color:#f6f8fb}
+main{max-width:900px;margin:auto}header{display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap;margin:0 0 28px}
+h1{font-size:clamp(26px,5vw,42px);margin:0}h1 span{color:var(--yellow)}h2{font-size:22px;margin:0 0 18px}
+a{color:var(--yellow)}.panel{background:var(--panel);padding:clamp(20px,4vw,30px);border:1px solid var(--edge);border-radius:18px;margin:20px 0}
+label{font-weight:600;display:block;margin-bottom:6px}input{display:block;width:100%;background:#0c131b;color:white;border:1px solid #4a5563;border-radius:10px;padding:12px 14px;min-height:45px;font:inherit}input:focus{outline:2px solid var(--yellow);outline-offset:2px}
+.field{margin-bottom:16px}button{border:1px solid #5b6570;background:#202a35;color:white;border-radius:10px;min-height:43px;padding:10px 18px;font:600 15px system-ui;cursor:pointer}button:hover{border-color:var(--yellow)}button.primary{background:var(--yellow);color:#111;border-color:var(--yellow)}button.danger{border-color:#de6570;color:#ffbac0}button:disabled{opacity:.5;cursor:wait}
+.row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}.row>*{max-width:100%}.row .grow{flex:1 1 230px}
+.muted{color:var(--muted);font-size:14px}.status{min-height:24px;margin-top:14px;color:#f9d774}.status.error{color:#ff9ba6}
+#admin-section[hidden],#login-section[hidden],#photo-editor[hidden]{display:none}
+.photo-list{display:grid;gap:12px}
+.photo-item{display:grid;grid-template-columns:115px minmax(0,1fr);gap:16px;align-items:center;padding:12px;background:#0e141b;border:1px solid var(--edge);border-radius:12px}
+.photo-item img{width:115px;height:78px;object-fit:cover;border-radius:8px}.photo-item p{margin:0 0 6px;overflow-wrap:anywhere}.photo-item .row{gap:8px}
+@media(max-width:520px){.photo-item{grid-template-columns:1fr}.photo-item img{width:100%;height:160px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+ <h1>EcuaServer <span>+593</span></h1>
+ <a href="/#galeria">Volver a la galería</a>
+</header>
+<section id="login-section" class="panel" aria-labelledby="login-title">
+ <h2 id="login-title">Acceso administrativo</h2>
+ <form id="login-form">
+  <div class="field"><label for="email">Correo electrónico</label><input id="email" type="email" autocomplete="username" required></div>
+  <div class="field"><label for="password">Contraseña</label><input id="password" type="password" autocomplete="current-password" required></div>
+  <button class="primary" type="submit">Iniciar sesión</button>
+ </form>
+ <p class="muted">Solo las cuentas autorizadas pueden cambiar fotografías o títulos.</p>
+</section>
+<section id="admin-section" hidden>
+ <div class="row"><span id="session-email" class="muted grow"></span><button type="button" id="logout">Cerrar sesión</button></div>
+ <section class="panel">
+  <h2>Título de la galería</h2>
+  <form id="title-form"><div class="field"><label for="gallery-title">Título</label><input id="gallery-title" maxlength="120" required></div><button class="primary" type="submit">Guardar título</button></form>
+ </section>
+ <section class="panel">
+  <h2 id="editor-title">Agregar fotografía</h2>
+  <form id="photo-editor">
+   <div class="field"><label for="photo-file">Imagen JPG, PNG, WebP o AVIF (hasta 8 MB)</label><input id="photo-file" type="file" accept="image/jpeg,image/png,image/webp,image/avif"></div>
+   <div class="field"><label for="photo-caption">Descripción de la fotografía</label><input id="photo-caption" maxlength="160" placeholder="Opcional"></div>
+   <div class="field"><label for="photo-order">Orden (de izquierda a derecha)</label><input id="photo-order" type="number" min="0" max="9999" step="1" value="0" required></div>
+   <div class="row"><button class="primary" type="submit" id="save-photo">Agregar fotografía</button><button type="button" id="cancel-edit" hidden>Cancelar edición</button></div>
+  </form>
+ </section>
+ <section class="panel"><h2>Fotografías publicadas</h2><div id="photo-list" class="photo-list"></div></section>
+</section>
+<p id="status" role="status" aria-live="polite" class="status"></p>
+</main>
+<script>
+(() => {
+'use strict';
+const endpoint='https://oukgdzfhqeygocmxuiwt.supabase.co';
+const key='sb_publishable_1U6UEZiyArZL2wswqNfdAA_PSiZesM1';
+const bucket='ecuaserver-galeria';
+const $=id=>document.getElementById(id);
+const status=$('status');
+const login=$('login-section'),admin=$('admin-section');
+let session=null,photos=[],editing=null,busy=false;
+function say(message,error=false){status.textContent=message;status.className='status'+(error?' error':'');}
+function setBusy(value){busy=value;document.querySelectorAll('button').forEach(b=>{if(b.id!=='logout')b.disabled=value;});}
+async function request(path,{method='GET',body,auth=false,contentType='application/json',headers={}}={}){
+  let token='';
+  if(auth){
+    if(!session)throw Error('Inicia sesión.');
+    if(session.expires_at && session.expires_at*1000<Date.now()+60000)await refreshSession();
+    token=session.access_token;
+  }
+  const h={apikey:key,...headers};
+  if(auth)h.Authorization='Bearer '+token;
+  if(body!==undefined&&contentType)h['Content-Type']=contentType;
+  const response=await fetch(endpoint+path,{method,headers:h,body:body===undefined?undefined:contentType==='application/json'?JSON.stringify(body):body});
+  const raw=await response.text();
+  let data;try{data=raw?JSON.parse(raw):null}catch{data=raw}
+  if(!response.ok)throw Error((data&& (data.message||data.msg||data.error_description||data.error))||('Error HTTP '+response.status));
+  return data;
+}
+function saveSession(s){
+  session={...s,expires_at:s.expires_at||Math.floor(Date.now()/1000)+(s.expires_in||3600)};
+  sessionStorage.setItem('ecua_gallery_session',JSON.stringify(session));
+}
+async function refreshSession(){
+  if(!session?.refresh_token)throw Error('La sesión caducó.');
+  const s=await request('/auth/v1/token?grant_type=refresh_token',{method:'POST',body:{refresh_token:session.refresh_token}});
+  saveSession(s);
+}
+async function ensureAdmin(){
+ const allowed=await request('/rest/v1/rpc/ecuaserver_can_manage_gallery',{method:'POST',auth:true,body:{}});
+ if(allowed!==true)throw Error('Esta cuenta no tiene permisos de administración.');
+}
+async function load(){
+ const [settings,list]=await Promise.all([
+   request('/rest/v1/ecuaserver_gallery_settings?select=title&id=eq.1',{auth:true}),
+   request('/rest/v1/ecuaserver_gallery_photos?select=id,object_path,caption,sort_order,created_at&order=sort_order.asc,created_at.asc&limit=100',{auth:true})
+ ]);
+ $('gallery-title').value=settings[0]?.title||'Galería de fotografías';
+ photos=list||[];
+ renderList();
+}
+function makeButton(label,cb,klass=''){const b=document.createElement('button');b.type='button';b.textContent=label;b.className=klass;b.addEventListener('click',cb);return b;}
+function renderList(){
+ const root=$('photo-list');root.replaceChildren();
+ if(photos.length===0){const p=document.createElement('p');p.className='muted';p.textContent='Todavía no hay fotografías.';root.append(p);return;}
+ for(const photo of photos){
+  const item=document.createElement('div');item.className='photo-item';
+  const img=document.createElement('img');img.loading='lazy';img.alt=photo.caption||'Fotografía';img.src=endpoint+'/storage/v1/object/public/'+bucket+'/'+encodeURIComponent(photo.object_path);
+  const details=document.createElement('div');
+  const text=document.createElement('p');text.textContent=(photo.caption||'Sin descripción')+' · Orden: '+photo.sort_order;
+  const actions=document.createElement('div');actions.className='row';
+  actions.append(makeButton('Editar',()=>editPhoto(photo)),makeButton('Retirar',()=>removePhoto(photo),'danger'));
+  details.append(text,actions);item.append(img,details);root.append(item);
+ }
+}
+function editPhoto(photo){
+ editing=photo;$('editor-title').textContent='Editar fotografía';$('photo-caption').value=photo.caption||'';$('photo-order').value=photo.sort_order;$('photo-file').value='';$('save-photo').textContent='Guardar cambios';$('cancel-edit').hidden=false;
+ $('photo-editor').scrollIntoView({behavior:'smooth',block:'center'});
+}
+function resetEditor(){
+ editing=null;$('editor-title').textContent='Agregar fotografía';$('photo-editor').reset();$('photo-order').value=photos.length*10;$('save-photo').textContent='Agregar fotografía';$('cancel-edit').hidden=true;
+}
+function fileCheck(file){
+ if(!file)return;
+ if(!['image/jpeg','image/png','image/webp','image/avif'].includes(file.type))throw Error('Solo se admiten fotografías JPG, PNG, WebP o AVIF.');
+ if(file.size>8*1024*1024)throw Error('La fotografía supera los 8 MB.');
+}
+async function uploadFile(file){
+ fileCheck(file);
+ const ext={'image/jpeg':'jpg','image/png':'png','image/webp':'webp','image/avif':'avif'}[file.type];
+ const path=crypto.randomUUID()+'.'+ext;
+ await request('/storage/v1/object/'+bucket+'/'+path,{method:'POST',auth:true,body:file,contentType:file.type,headers:{'x-upsert':'false','cache-control':'3600'}});
+ return path;
+}
+async function removeStorage(path){
+ await request('/storage/v1/object/'+bucket+'/'+encodeURIComponent(path),{method:'DELETE',auth:true});
+}
+$('login-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(busy)return;setBusy(true);say('Comprobando credenciales…');
+ try{
+  const s=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:$('email').value.trim(),password:$('password').value}});
+  saveSession(s);await ensureAdmin();login.hidden=true;admin.hidden=false;$('session-email').textContent=session.user?.email||'';$('password').value='';await load();resetEditor();say('Panel administrativo disponible.');
+ }catch(e){session=null;sessionStorage.removeItem('ecua_gallery_session');say(e.message,true)}
+ finally{setBusy(false)}
+});
+$('logout').addEventListener('click',()=>{
+ const token=session?.access_token;
+ if(token)fetch(endpoint+'/auth/v1/logout',{method:'POST',headers:{apikey:key,Authorization:'Bearer '+token}}).catch(()=>{});
+ session=null;sessionStorage.removeItem('ecua_gallery_session');admin.hidden=true;login.hidden=false;say('Sesión cerrada.');
+});
+$('title-form').addEventListener('submit',async e=>{
+ e.preventDefault();if(busy)return;const title=$('gallery-title').value.trim();if(!title)return;
+ setBusy(true);say('Guardando título…');
+ try{await request('/rest/v1/ecuaserver_gallery_settings?id=eq.1',{method:'PATCH',auth:true,body:{title},headers:{Prefer:'return=minimal'}});say('Título actualizado.');}
+ catch(e){say(e.message,true)}finally{setBusy(false)}
+});
+$('cancel-edit').addEventListener('click',resetEditor);
+$('photo-editor').addEventListener('submit',async e=>{
+ e.preventDefault();if(busy)return;
+ const file=$('photo-file').files[0],caption=$('photo-caption').value.trim(),sort_order=Number($('photo-order').value);
+ if(!editing&&!file){say('Selecciona una fotografía.',true);return;}
+ if(!Number.isInteger(sort_order)||sort_order<0||sort_order>9999){say('El orden debe estar entre 0 y 9999.',true);return;}
+ try{fileCheck(file)}catch(e){say(e.message,true);return;}
+ setBusy(true);say('Guardando fotografía…');let newPath=null;
+ try{
+  if(file)newPath=await uploadFile(file);
+  if(editing){
+   const prev=editing.object_path;
+   const changes={caption,sort_order};if(newPath)changes.object_path=newPath;
+   await request('/rest/v1/ecuaserver_gallery_photos?id=eq.'+encodeURIComponent(editing.id),{method:'PATCH',auth:true,body:changes,headers:{Prefer:'return=minimal'}});
+   if(newPath)await removeStorage(prev).catch(()=>say('Fotografía actualizada. El archivo anterior requiere limpieza.'));
+  }else{
+   await request('/rest/v1/ecuaserver_gallery_photos',{method:'POST',auth:true,body:{object_path:newPath,caption,sort_order},headers:{Prefer:'return=minimal'}});
+  }
+  await load();resetEditor();say('Cambios publicados.');
+ }catch(e){if(newPath)await removeStorage(newPath).catch(()=>{});say(e.message,true)}
+ finally{setBusy(false)}
+});
+async function removePhoto(photo){
+ if(busy||!confirm('¿Retirar esta fotografía de la galería?'))return;
+ setBusy(true);say('Retirando fotografía…');
+ try{
+  await request('/rest/v1/ecuaserver_gallery_photos?id=eq.'+encodeURIComponent(photo.id),{method:'DELETE',auth:true,headers:{Prefer:'return=minimal'}});
+  await removeStorage(photo.object_path).catch(()=>{});
+  await load();resetEditor();say('Fotografía retirada.');
+ }catch(e){say(e.message,true)}finally{setBusy(false)}
+}
+(async()=>{
+ try{
+  const stored=sessionStorage.getItem('ecua_gallery_session');if(!stored)return;
+  session=JSON.parse(stored);await ensureAdmin();login.hidden=true;admin.hidden=false;$('session-email').textContent=session.user?.email||'';await load();resetEditor();say('Sesión restaurada.');
+ }catch(e){session=null;sessionStorage.removeItem('ecua_gallery_session');say('Inicia sesión para administrar.');}
+})();
+})();
+</script>
+</body>
+</html>
