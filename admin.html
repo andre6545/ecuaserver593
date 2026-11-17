@@ -4,7 +4,8 @@
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0b0f14">
-<title>Administrar galería | EcuaServer +593</title>
+<title>Panel administrativo | EcuaServer +593</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
 <style>
 :root{color-scheme:dark;--bg:#0b0f14;--panel:#151b23;--yellow:#ffd600;--muted:#a6b1bf;--edge:#39404a}
 *{box-sizing:border-box}body{margin:0;padding:32px 20px 80px;background:radial-gradient(ellipse at 70% 0,rgba(255,214,0,.075),transparent 45%),var(--bg);font:16px/1.55 system-ui,sans-serif;color:#f6f8fb}
@@ -162,8 +163,9 @@ $('login-form').addEventListener('submit',async e=>{
  e.preventDefault();if(busy)return;setBusy(true);say('Comprobando credenciales…');
  try{
   const username=$('username').value.trim();
-  if(username.toUpperCase()!=='ANDRES')throw Error('Usuario o contraseña incorrectos.');
-  const s=await request('/auth/v1/token?grant_type=password',{method:'POST',body:{email:'atsflc42@gmail.com',password:$('password').value}});
+  const response=await fetch('/api/admin-login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username,password:$('password').value}),cache:'no-store'});
+  const s=await response.json();
+  if(!response.ok)throw Error(s.error||'Usuario o contraseña incorrectos.');
   saveSession(s);await ensureAdmin();login.hidden=true;admin.hidden=false;$('session-email').textContent='ANDRES';$('password').value='';await load();resetEditor();say('Panel administrativo disponible.');
  }catch(e){session=null;sessionStorage.removeItem('ecua_gallery_session');say(e.message,true)}
  finally{setBusy(false)}
