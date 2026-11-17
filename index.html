@@ -6,23 +6,23 @@
   <meta name="theme-color" content="#0b0f14">
   <meta name="description" content="EcuaServer +593. Una pequeña comunidad del juego American Truck Simulator para jugar mutuamente y recorrer las vias de todo el Ecuador.">
   <link rel="canonical" href="https://ecuaserver593.vercel.app/">
-  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
   <meta property="og:type" content="website">
   <meta property="og:locale" content="es_EC">
   <meta property="og:site_name" content="EcuaServer +593">
   <meta property="og:title" content="EcuaServer +593 | American Truck Simulator">
   <meta property="og:description" content="Comunidad ecuatoriana de American Truck Simulator. Recorremos juntos las vías del Ecuador.">
   <meta property="og:url" content="https://ecuaserver593.vercel.app/">
-  <meta property="og:image" content="https://ecuaserver593.vercel.app/social-cover.svg">
+  <meta property="og:image" content="https://ecuaserver593.vercel.app/assets/brand/social-card.jpg">
   <meta property="og:image:alt" content="EcuaServer +593, comunidad ecuatoriana de American Truck Simulator">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="EcuaServer +593">
   <meta name="twitter:description" content="Comunidad ecuatoriana de American Truck Simulator">
-  <meta name="twitter:image" content="https://ecuaserver593.vercel.app/social-cover.svg">
+  <meta name="twitter:image" content="https://ecuaserver593.vercel.app/assets/brand/social-card.jpg">
   <title>EcuaServer +593</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
       color-scheme: dark;
@@ -444,6 +444,130 @@
     @media(max-width:860px){.topbar{flex-wrap:wrap;gap:12px}.launch-nav{order:3;width:100%;justify-content:center}.launch-nav a{font-size:12px;padding:8px 9px}}
     @media(max-width:540px){.launch-nav{justify-content:space-between}.launch-nav a{font-size:11px;padding:7px 5px}.gallery-lightbox{padding:9px}.gallery-lightbox-body{gap:5px}.gallery-lightbox-body img{max-width:calc(100% - 72px)}.gallery-lightbox-arrow{padding:8px}.launch-footer{margin-top:45px}}
     @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+    /* Identidad editorial EcuaServer · inspirada en las imágenes oficiales de la comunidad.
+       Conserva el resto de módulos y todos sus identificadores públicos. */
+    :root {
+      --bg:#0b0d11;--surface:#171b21;--surface-high:#222830;
+      --yellow:#e6bf72;--white:#f4f2ed;--muted:#aeb5bd;
+      --edge:rgba(236,224,201,.13);
+      --heading:'Barlow Condensed','Arial Narrow',sans-serif;
+      --body:'Manrope',system-ui,sans-serif;
+    }
+    html{scroll-padding-top:105px}
+    body{background:#0b0d11;line-height:1.7}
+    body::before{background:radial-gradient(ellipse 54% 36% at 87% 18%,rgba(204,155,69,.045),transparent),linear-gradient(#0b0d11,#0b0d11);mask-image:none;z-index:-2}
+    .container{width:min(100% - 56px,1280px)}
+    .topbar{min-height:98px;border-bottom:1px solid rgba(236,224,201,.12);gap:16px}
+    .brand{gap:9px;font:700 22px/1 var(--heading);letter-spacing:.055em;white-space:nowrap}
+    .brand strong{color:var(--yellow)}
+    .brand-symbol.brand-official{width:122px;height:68px;display:flex;align-items:center;justify-content:center;background:none;border:0;border-radius:0}
+    .brand-symbol.brand-official img{display:block;max-width:100%;height:auto;max-height:67px;object-fit:contain}
+    .launch-nav a{font:700 12px/1.2 var(--body);letter-spacing:.015em;color:#d8d6d0}
+    .launch-nav a:hover{color:var(--yellow);background:rgba(230,191,114,.06)}
+    .flag{border-radius:1px;box-shadow:none;transform:none;width:27px;height:16px}
+    .official-banner{margin-top:32px;background:#101419;border:1px solid rgba(236,224,201,.13);overflow:hidden;border-radius:15px;box-shadow:0 22px 65px rgba(0,0,0,.25)}
+    .official-banner-media{position:relative;background:#06080b}
+    .official-banner-media img{display:block;width:100%;height:auto;max-height:690px;object-fit:contain}
+    .official-banner-caption{display:flex;justify-content:space-between;align-items:center;gap:22px;padding:20px 30px;background:linear-gradient(90deg,#161c23,#11161b)}
+    .official-banner-caption .eyebrow{font:800 10px/1.4 var(--body);letter-spacing:.2em;color:var(--yellow)}
+    .official-banner-caption p{font:600 clamp(15px,1.7vw,20px)/1.45 var(--body);letter-spacing:-.025em;margin:6px 0 0;color:#edeae3}
+    .official-banner-caption a{white-space:nowrap;text-decoration:none;border:1px solid rgba(230,191,114,.48);color:var(--yellow);font:800 12px var(--body);letter-spacing:.015em;padding:12px 18px;border-radius:5px}
+    .official-banner-caption a:hover{background:rgba(230,191,114,.1)}
+    main{min-height:auto;padding-block:clamp(65px,8vw,112px)}
+    .hero{grid-template-columns:1.05fr .95fr;gap:clamp(36px,6vw,85px);align-items:center}
+    .accent-rule .rule{height:2px;width:40px}
+    .accent-rule .dots i{width:4px;height:4px;border-radius:50%;transform:none}
+    h1{font:800 clamp(58px,6.7vw,94px)/.9 var(--heading);margin:22px 0 28px;letter-spacing:-.02em}
+    h1 span{margin-top:0;text-shadow:none}
+    .about{margin-top:34px;border-left:2px solid var(--yellow);padding-left:23px}
+    .about h2{font:700 25px/1.1 var(--heading);letter-spacing:.04em}
+    .about p{font:400 14px/1.9 var(--body);color:#c8cbd0}
+    .actions{margin-top:29px;gap:10px}
+    .action{min-height:49px;border-radius:5px;font:700 15px/1 var(--body);text-transform:none;letter-spacing:0;padding:13px 17px;box-shadow:none}
+    .action:hover{transform:translateY(-1px)}
+    .action.primary{background:var(--yellow);color:#151312;box-shadow:none}
+    .action.primary:hover{background:#f2ce88;box-shadow:none}
+    .action.secondary{border-color:rgba(230,191,114,.55)}
+    .info-panel{min-height:0;border-radius:11px;padding:24px;background:#161b21;border-color:rgba(236,224,201,.17);box-shadow:0 12px 50px #0004;gap:0}
+    .info-panel::before{display:none}
+    .panel-top{padding-bottom:18px}
+    .panel-line{height:3px;width:84px}
+    .panel-screws{display:none}
+    .route-art{width:100%;margin:0 0 16px;opacity:1;filter:none;max-width:none;align-self:stretch;position:relative;overflow:hidden;aspect-ratio:16/10;background:#0b1016;border-radius:6px}
+    .route-art img{width:100%;height:100%;object-fit:cover;object-position:50% 58%;display:block}
+    .route-art figcaption{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(0deg,rgba(0,0,0,.84),transparent);color:#f5ede1;padding:28px 16px 12px;font:700 12px/1.4 var(--body)}
+    .spec{padding:15px 0;gap:7px}
+    .spec-label{font:700 11px/1.3 var(--body);letter-spacing:.12em}
+    .spec-value{font:700 clamp(23px,2.3vw,30px)/1.1 var(--heading)}
+    .copy-btn{border-radius:6px}
+    .server-status-section{padding-bottom:clamp(65px,7vw,100px)}
+    .server-status-card{background:#151a20;border-color:rgba(236,224,201,.18);border-radius:12px;padding:clamp(20px,3.2vw,42px);box-shadow:0 18px 50px #0003}
+    .server-status-card::before{left:36px;width:90px;height:2px}
+    .server-status-head h2,.staff-heading h2,.gallery-head h2{font-family:var(--heading);font-weight:700;letter-spacing:0}
+    .server-status-head h2{font-size:clamp(32px,4vw,46px)}
+    .server-status-field{border-color:rgba(236,224,201,.08);border-radius:8px;background:#1b2026}
+    .server-players-field{background:#24251f;border-color:rgba(230,191,114,.24);box-shadow:none}
+    .server-players-number{font-size:clamp(46px,5vw,63px);text-shadow:none}
+    .server-players-icon{background:rgba(230,191,114,.08)}
+    .server-history-panel{border-radius:9px}
+    .staff-section{padding-bottom:clamp(70px,8vw,112px)}
+    .staff-heading{text-align:left;margin-bottom:28px}
+    .staff-divider{letter-spacing:.2em}
+    .staff-featured{margin-bottom:37px}
+    .staff-grid{gap:19px}
+    .gallery-section{padding-bottom:clamp(60px,7vw,100px)}
+    .gallery-head h2{font-size:clamp(38px,5vw,60px)}
+    .gallery-photo{border-radius:9px;border-color:rgba(236,224,201,.17);box-shadow:none}
+    .gallery-control{border-radius:6px}
+    .launch-footer{border-top-color:rgba(236,224,201,.15);padding-bottom:45px}
+    .footer-identity{display:flex;align-items:center;gap:14px}
+    .footer-motion{display:block;width:125px;flex:0 0 125px}
+    .footer-motion img{display:block;width:100%;height:auto;object-fit:contain}
+    .launch-footer strong{font-family:var(--heading);font-size:23px}
+    .launch-footer p{font-size:11px}
+    @media(max-width:1040px){
+      .brand-symbol.brand-official{width:98px;height:56px}
+      .brand-symbol.brand-official img{max-height:56px}
+      .brand{font-size:19px}
+      .launch-nav a{padding:7px 8px}
+    }
+    @media(max-width:850px){
+      .topbar{min-height:90px}
+      .launch-nav{width:100%;order:3;justify-content:space-between;border-top:1px solid var(--edge);padding:6px 0}
+      .flag{margin-left:auto}
+      .hero{grid-template-columns:1fr}
+      .info-panel{max-width:680px;width:100%;margin-inline:auto}
+      .route-art{aspect-ratio:16/8}
+      .official-banner{margin-top:17px}
+      main{padding-block:60px}
+    }
+    @media(max-width:580px){
+      .container{width:min(100% - 28px,1280px)}
+      .brand-symbol.brand-official{width:78px;height:48px}
+      .brand-symbol.brand-official img{max-height:48px}
+      .brand{font-size:17px;letter-spacing:.01em}
+      .flag{width:23px;height:14px}
+      .launch-nav{gap:2px}
+      .launch-nav a{padding:9px 4px;font-size:11px;white-space:nowrap}
+      .official-banner{margin-top:14px;border-radius:9px}
+      .official-banner-caption{padding:17px;gap:14px;align-items:flex-start;flex-direction:column}
+      .official-banner-caption p{font-size:15px}
+      .official-banner-caption a{padding:10px 13px;font-size:11px}
+      main{padding-block:53px}
+      h1{font-size:clamp(53px,14vw,72px)}
+      .about{margin-top:24px;padding-left:15px}
+      .about p{font-size:13px;line-height:1.85}
+      .actions{display:flex;flex-wrap:wrap}
+      .action{flex:1 1 42%;min-height:46px;padding:10px;font-size:13px}
+      .action.primary{flex:1 1 100%}
+      .route-art{aspect-ratio:16/10}
+      .server-status-card{padding:20px 14px}
+      .footer-identity{gap:8px}
+      .footer-motion{width:90px;flex-basis:90px}
+      .launch-footer strong{font-size:20px}
+    }
+    @media(prefers-reduced-motion:reduce){.route-art img{transition:none}}
   </style>
 </head>
 <body>
@@ -451,10 +575,8 @@
   <div class="container">
     <header class="topbar">
       <a class="brand" href="/" aria-label="EcuaServer +593">
-        <span class="brand-symbol" aria-hidden="true">
-          <svg width="27" height="27" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M2 6h13v11H2zM15 10h4l3 4v3h-7zM6 17a2 2 0 1 0 4 0M17 17a2 2 0 1 0 4 0M2 10h13"/>
-          </svg>
+        <span class="brand-symbol brand-official" aria-hidden="true">
+          <img src="/assets/brand/logo.webp" width="128" height="64" alt="" decoding="async">
         </span>
         <span>ECUASERVER <strong>+593</strong></span>
       </a>
@@ -464,6 +586,18 @@
       </nav>
       <div class="flag" aria-hidden="true"><span class="y"></span><span class="b"></span><span class="r"></span></div>
     </header>
+    <section class="official-banner" aria-label="Imagen oficial de EcuaServer +593">
+      <div class="official-banner-media">
+        <img src="/assets/brand/hero-banner.webp" width="1672" height="941" fetchpriority="high" decoding="async" alt="Imagen oficial de EcuaServer +593, con camiones de American Truck Simulator, paisajes ecuatorianos, volcanes y los colores de Ecuador">
+      </div>
+      <div class="official-banner-caption">
+        <div>
+          <span class="eyebrow">ECUADOR · COMUNIDAD DE SIMULACIÓN</span>
+          <p>Un mismo camino. Muchas historias por recorrer.</p>
+        </div>
+        <a href="#estado-servidor">Explorar el servidor <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
     <main>
       <div class="hero">
         <section class="hero-copy" aria-labelledby="site-title">
@@ -481,19 +615,10 @@
         </section>
         <aside class="info-panel" aria-label="Información de EcuaServer +593">
           <div class="panel-top" aria-hidden="true"><div class="panel-line"></div><div class="panel-screws"><i></i><i></i></div></div>
-          <div class="truck-art" aria-hidden="true">
-            <svg viewBox="0 0 390 210" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <defs><linearGradient id="truckLine" x1="0" y1="0" x2="390" y2="210"><stop stop-color="#FFD600"/><stop offset="1" stop-color="#7C6B22"/></linearGradient></defs>
-              <path d="M21 145h355" stroke="#FFD600" opacity=".18" stroke-width="1"/><path d="M50 154h-24m-9 0H4m372 0h10" stroke="#FFD600" opacity=".5" stroke-width="2" stroke-linecap="round"/>
-              <path d="M73 123V70c0-8 6-14 14-14h139c6 0 11 4 11 10v76H73m164-67h57c9 0 17 5 22 13l26 37v18h18c5 0 8 4 8 8v12h-26m-26 0h-97m-28 0H107m-30 0H40v-13h33" stroke="url(#truckLine)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M247 89h47l25 36h-72V89Zm-8 43h103M89 70h129M89 84h131M89 98h131M89 112h131M89 126h131M239 145H73" stroke="url(#truckLine)" opacity=".65" stroke-width="2" stroke-linejoin="round"/>
-              <path d="M59 154H40m335 0h-13" stroke="#FFD600" stroke-width="5" stroke-linecap="round"/><path d="M257 91v36m64 3v13m-59 1h22" stroke="#FFD600" opacity=".65" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="92" cy="162" r="19" fill="#131B23" stroke="#FFD600" stroke-width="3"/><circle cx="92" cy="162" r="7" stroke="#FFD600" opacity=".8" stroke-width="2"/>
-              <circle cx="201" cy="162" r="19" fill="#131B23" stroke="#FFD600" stroke-width="3"/><circle cx="201" cy="162" r="7" stroke="#FFD600" opacity=".8" stroke-width="2"/>
-              <circle cx="328" cy="162" r="19" fill="#131B23" stroke="#FFD600" stroke-width="3"/><circle cx="328" cy="162" r="7" stroke="#FFD600" opacity=".8" stroke-width="2"/>
-              <path d="M55 40h120m14 0h15M65 30h90m100 15h30" stroke="#FFD600" opacity=".23" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
+          <figure class="truck-art route-art">
+            <img src="/assets/brand/road-scene.webp" width="1150" height="1150" loading="lazy" decoding="async" alt="Ilustración oficial de EcuaServer +593 con un autobús y un camión en una carretera ecuatoriana al atardecer">
+            <figcaption>Comunidad, rutas y amistad</figcaption>
+          </figure>
           <div class="specs">
             <div class="spec">
               <span class="spec-label">ID</span>
@@ -632,7 +757,13 @@
       <a class="gallery-admin-link" href="/admin.html">Administrar fotografías ↗</a>
     </section>
     <footer class="launch-footer">
-      <div><strong>EcuaServer +593</strong><p>Comunidad de American Truck Simulator · Ecuador</p></div>
+      <div class="footer-identity">
+        <picture class="footer-motion">
+          <source media="(prefers-reduced-motion: reduce)" srcset="/assets/brand/logo.webp">
+          <img src="/assets/brand/animated-logo.gif" width="138" height="77" loading="lazy" alt="Emblema animado EcuaServer +593" decoding="async">
+        </picture>
+        <div><strong>EcuaServer +593</strong><p>Comunidad de American Truck Simulator · Ecuador</p></div>
+      </div>
       <nav aria-label="Enlaces del pie de página">
         <a href="#estado-servidor">Estado del servidor</a>
         <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Discord</a>
