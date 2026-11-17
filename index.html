@@ -209,6 +209,48 @@
       html {scroll-behavior:auto;}
       *,*::before,*::after {transition-duration:.01ms!important;animation-duration:.01ms!important;}
     }
+
+    /* Equipo de EcuaServer +593 */
+    .staff-section { padding: 10px 0 clamp(80px, 9vw, 130px); }
+    .staff-heading { text-align: center; margin: 0 auto 35px; }
+    .staff-heading h2 { margin: 0; font: 700 clamp(36px, 4.6vw, 62px)/1.08 var(--heading); letter-spacing: -.015em; text-transform: none; }
+    .staff-heading h2 span { color: var(--yellow); }
+    .staff-divider { display: flex; align-items: center; justify-content: center; gap: 20px; max-width: 920px; margin: 0 auto 30px; color: #8f9baa; text-transform: uppercase; letter-spacing: .3em; font: 700 12px/1.3 var(--body); }
+    .staff-divider::before, .staff-divider::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(235,245,255,.15)); }
+    .staff-divider::after { transform: rotate(180deg); }
+    .staff-featured { max-width: 460px; margin: 0 auto 60px; }
+    .staff-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; max-width: 940px; margin-inline: auto; }
+    .staff-card { --staff-accent: #ffd600; --staff-glow: rgba(255,214,0,.16); min-width: 0; }
+    .staff-card.manager { --staff-accent: #2dc5d5; --staff-glow: rgba(45,197,213,.13); }
+    .staff-card.admin { --staff-accent: #5c9bed; --staff-glow: rgba(92,155,237,.15); }
+    .staff-visual { position: relative; display: flex; align-items: center; justify-content: center; height: 340px; border-radius: 18px; border: 1px solid color-mix(in srgb, var(--staff-accent) 38%, #101820); overflow: visible; background: radial-gradient(ellipse at 50% 35%,var(--staff-glow),transparent 66%), linear-gradient(155deg,#181b20 0%,#101318 72%,#0d1117 100%); box-shadow: 0 25px 65px rgba(0,0,0,.27), inset 0 1px 0 rgba(255,255,255,.055); }
+    .staff-card.featured .staff-visual { height: 400px; }
+    .staff-card.featured .staff-visual::before { content: ""; position: absolute; left: -4px; top: 19%; width: 5px; height: 54%; border-radius: 6px; background: var(--staff-accent); box-shadow: 0 0 24px var(--staff-glow); }
+    .staff-badge { position: absolute; z-index: 2; top: 16px; right: 16px; display: inline-flex; gap: 8px; align-items: center; padding: 8px 14px; border: 1px solid color-mix(in srgb, var(--staff-accent) 65%, transparent); border-radius: 999px; color: var(--staff-accent); background: color-mix(in srgb, var(--staff-accent) 8%, #10151c); letter-spacing: .095em; font: 700 12px/1 var(--body); }
+    .staff-card.featured .staff-badge { background: var(--yellow); color: #10151c; }
+    .staff-avatar-link { display: grid; place-items: center; width: min(65%, 230px); aspect-ratio: 1; border-radius: 25px; text-decoration: none; transition: transform .25s ease,filter .25s ease; }
+    .staff-avatar-link:hover { transform: scale(1.045); filter: brightness(1.1); }
+    .staff-avatar { display: block; width: 100%; height: 100%; object-fit: cover; border: 2px solid color-mix(in srgb, var(--staff-accent) 68%, #fff); border-radius: 22px; box-shadow: 0 18px 45px rgba(0,0,0,.5), 0 0 35px var(--staff-glow); background: #171d24; }
+    .staff-card.featured .staff-avatar-link { width: min(62%, 220px); }
+    .staff-card-details { padding-top: 18px; min-height: 58px; }
+    .staff-name { margin: 0; font: 700 30px/1.2 var(--heading); letter-spacing: .005em; overflow-wrap: anywhere; }
+    .staff-name a { color: var(--white); text-decoration: none; transition: color .2s; }
+    .staff-name a:hover { color: var(--staff-accent); }
+    .staff-steam-mark { display: inline-block; width: 18px; height: 18px; vertical-align: 1px; margin-left: 5px; color: var(--staff-accent); }
+    @media (max-width: 700px) {
+      .staff-section { padding-top: 8px; }
+      .staff-heading h2 { font-size: clamp(31px, 8vw, 49px); }
+      .staff-featured { margin-bottom: 34px; }
+      .staff-grid { grid-template-columns: 1fr; max-width: 460px; gap: 32px; }
+      .staff-card.featured .staff-visual { height: 320px; }
+      .staff-visual { height: 310px; }
+    }
+    @media (max-width: 420px) {
+      .staff-card.featured .staff-visual { height: 285px; }
+      .staff-visual { height: 275px; }
+      .staff-badge { top: 12px; right: 12px; font-size: 11px; padding: 8px 10px; }
+      .staff-name { font-size: 27px; }
+    }
   </style>
 </head>
 <body>
@@ -269,6 +311,44 @@
         </aside>
       </div>
     </main>
+
+    <section id="equipo" class="staff-section" aria-labelledby="staff-title">
+      <div class="staff-heading">
+        <h2 id="staff-title">Equipo de <span>EcuaServer +593</span></h2>
+      </div>
+      <div class="staff-divider" aria-hidden="true">Equipo</div>
+
+      <div class="staff-card featured staff-featured">
+        <div class="staff-visual">
+          <span class="staff-badge">♛ Director</span>
+          <a class="staff-avatar-link" href="https://steamcommunity.com/profiles/76561199751162312" target="_blank" rel="noopener noreferrer" aria-label="Abrir perfil de Steam de GAMER_BOOM">
+            <img class="staff-avatar" src="https://avatars.akamai.steamstatic.com/ed02c41cc006fad9d1351566eeb952f1c527e3e2_full.jpg" alt="Avatar de Steam de GAMER_BOOM" width="220" height="220" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+          </a>
+        </div>
+        <div class="staff-card-details">
+          <h3 class="staff-name"><a href="https://steamcommunity.com/profiles/76561199751162312" target="_blank" rel="noopener noreferrer">GAMER_BOOM <span class="staff-steam-mark" aria-hidden="true">↗</span></a></h3>
+        </div>
+      </div>
+
+      <div class="staff-grid">
+        <div class="staff-card manager">
+          <div class="staff-visual">
+            <span class="staff-badge">Gerente</span>
+          </div>
+        </div>
+        <div class="staff-card admin">
+          <div class="staff-visual">
+            <span class="staff-badge">Administrador</span>
+            <a class="staff-avatar-link" href="https://steamcommunity.com/profiles/76561199879617549" target="_blank" rel="noopener noreferrer" aria-label="Abrir perfil de Steam de ΔNDRΞS.dlz">
+              <img class="staff-avatar" src="https://avatars.akamai.steamstatic.com/91db07008b5aed232a3aed51cf9225d4534ed87e_full.jpg" alt="Avatar de Steam de ΔNDRΞS.dlz" width="220" height="220" loading="lazy" decoding="async" referrerpolicy="no-referrer">
+            </a>
+          </div>
+          <div class="staff-card-details">
+            <h3 class="staff-name"><a href="https://steamcommunity.com/profiles/76561199879617549" target="_blank" rel="noopener noreferrer">ΔNDRΞS.dlz <span class="staff-steam-mark" aria-hidden="true">↗</span></a></h3>
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
   <script>
     (() => {
