@@ -251,6 +251,26 @@
       .staff-badge { top: 12px; right: 12px; font-size: 11px; padding: 8px 10px; }
       .staff-name { font-size: 27px; }
     }
+
+    /* Galería horizontal */
+    .gallery-section{padding:0 0 clamp(85px,10vw,140px);scroll-margin-top:32px}
+    .gallery-head{display:flex;align-items:end;justify-content:space-between;gap:20px;flex-wrap:wrap;margin-bottom:28px}
+    .gallery-head h2{margin:0;text-transform:none;font:700 clamp(38px,5vw,66px)/1 var(--heading);letter-spacing:-.025em}
+    .gallery-head h2 span{color:var(--yellow)}
+    .gallery-controls{display:flex;gap:10px;align-items:center}
+    .gallery-control{display:grid;place-items:center;width:45px;height:45px;border-radius:12px;border:1px solid rgba(255,214,0,.4);background:rgba(255,214,0,.08);color:var(--yellow);cursor:pointer;transition:background .2s}
+    .gallery-control:hover{background:rgba(255,214,0,.18)}
+    .gallery-control:disabled{opacity:.35;cursor:not-allowed}
+    .gallery-control svg{height:20px;width:20px;stroke:currentColor;fill:none;stroke-width:2}
+    .gallery-track{display:flex;gap:20px;overflow-x:auto;overscroll-behavior-inline:contain;scroll-snap-type:x mandatory;scrollbar-width:thin;scrollbar-color:rgba(255,214,0,.55) transparent;padding:8px 2px 22px}
+    .gallery-photo{flex:0 0 clamp(260px,37vw,430px);scroll-snap-align:start;overflow:hidden;min-width:0;border:1px solid rgba(255,214,0,.25);border-radius:18px;background:var(--surface);box-shadow:0 15px 40px rgba(0,0,0,.18)}
+    .gallery-photo img{display:block;aspect-ratio:16/10;width:100%;object-fit:cover;background:#19212a;transition:transform .35s}
+    .gallery-photo:hover img{transform:scale(1.025)}
+    .gallery-caption{margin:0;padding:14px 18px;font-weight:600;color:var(--white);overflow-wrap:anywhere}
+    .gallery-empty{border:1px dashed rgba(255,214,0,.24);border-radius:16px;padding:52px 25px;text-align:center;color:#acb7c3;background:rgba(255,255,255,.02);min-height:150px}
+    .gallery-admin-link{display:inline-flex;align-items:center;gap:8px;margin-top:25px;color:#b5c0cc;font-size:13px;text-decoration:none;border-bottom:1px solid rgba(255,255,255,.25);padding-bottom:4px}
+    .gallery-admin-link:hover{color:var(--yellow);border-color:var(--yellow)}
+    @media(max-width:600px){.gallery-photo{flex-basis:85vw}.gallery-head h2{font-size:40px}.gallery-head{align-items:center}.gallery-section{padding-bottom:75px}}
   </style>
 </head>
 <body>
@@ -349,6 +369,19 @@
         </div>
       </div>
     </section>
+
+    <section id="galeria" class="gallery-section" aria-labelledby="gallery-heading">
+      <div class="gallery-head">
+        <h2 id="gallery-heading">Galería de <span>fotografías</span></h2>
+        <div class="gallery-controls" aria-label="Desplazar fotografías">
+          <button type="button" class="gallery-control" id="gallery-prev" aria-label="Fotografías anteriores" disabled><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
+          <button type="button" class="gallery-control" id="gallery-next" aria-label="Fotografías siguientes" disabled><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
+        </div>
+      </div>
+      <div id="gallery-empty" class="gallery-empty" role="status">Todavía no hay fotografías publicadas.</div>
+      <div id="gallery-track" class="gallery-track" aria-label="Fotografías de EcuaServer +593" hidden></div>
+      <a class="gallery-admin-link" href="/admin.html">Administrar fotografías ↗</a>
+    </section>
   </div>
   <script>
     (() => {
@@ -371,6 +404,70 @@
         clearTimeout(resetTimer);
         resetTimer = setTimeout(() => { notice.textContent = ''; }, 3300);
       });
+    })();
+  </script>
+
+  <script>
+    (() => {
+      const endpoint = 'https://oukgdzfhqeygocmxuiwt.supabase.co';
+      const apiKey = 'sb_publishable_1U6UEZiyArZL2wswqNfdAA_PSiZesM1';
+      const bucket = 'ecuaserver-galeria';
+      const track = document.getElementById('gallery-track');
+      const empty = document.getElementById('gallery-empty');
+      const heading = document.getElementById('gallery-heading');
+      const prev = document.getElementById('gallery-prev');
+      const next = document.getElementById('gallery-next');
+
+      async function retrieve(path) {
+        const response = await fetch(endpoint + '/rest/v1/' + path, {headers: {apikey: apiKey}});
+        if (!response.ok) throw new Error('La galería no está disponible');
+        return response.json();
+      }
+      async function loadGallery() {
+        try {
+          const [settings, photos] = await Promise.all([
+            retrieve('ecuaserver_gallery_settings?select=title&id=eq.1'),
+            retrieve('ecuaserver_gallery_photos?select=id,object_path,caption,sort_order&order=sort_order.asc,created_at.asc&limit=100')
+          ]);
+          if(settings[0] && settings[0].title) heading.textContent = settings[0].title;
+          if(photos.length === 0) return;
+          const fragment = document.createDocumentFragment();
+          for (const photo of photos) {
+            const card = document.createElement('figure');
+            card.className = 'gallery-photo';
+            card.style.margin = '0';
+            const image = document.createElement('img');
+            image.src = endpoint + '/storage/v1/object/public/' + bucket + '/' + encodeURIComponent(photo.object_path);
+            image.loading = 'lazy';
+            image.decoding = 'async';
+            image.alt = photo.caption || 'Fotografía de EcuaServer +593';
+            card.append(image);
+            if(photo.caption) {
+              const caption = document.createElement('figcaption');
+              caption.className = 'gallery-caption';
+              caption.textContent = photo.caption;
+              card.append(caption);
+            }
+            fragment.append(card);
+          }
+          track.replaceChildren(fragment);
+          track.hidden = false;
+          empty.hidden = true;
+          refreshControls();
+        } catch {
+          empty.textContent = 'No se pudo cargar la galería en este momento.';
+        }
+      }
+      function refreshControls() {
+        prev.disabled = track.scrollLeft <= 2;
+        next.disabled = track.scrollLeft + track.clientWidth >= track.scrollWidth - 3;
+      }
+      const move = (direction) => track.scrollBy({left: direction * Math.min(track.clientWidth * .83, 460),behavior: 'smooth'});
+      prev.addEventListener('click', () => move(-1));
+      next.addEventListener('click', () => move(1));
+      track.addEventListener('scroll', refreshControls, {passive:true});
+      window.addEventListener('resize', refreshControls);
+      loadGallery();
     })();
   </script>
 </body>
