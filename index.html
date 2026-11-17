@@ -306,6 +306,35 @@
     .server-status-field {padding:22px;border-radius:15px;background:rgba(255,255,255,.035);border:1px solid rgba(255,255,255,.075)}
     .server-status-label {display:block;color:var(--muted);font:700 12px/1.4 var(--body);text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
     .server-status-value {font:700 clamp(25px,3vw,36px)/1.1 var(--heading);color:var(--white)}
+    /* Jugadores conectados: énfasis visual sin alterar la API */
+    .server-players-field {
+      border-color: rgba(255,214,0,.27);
+      background: linear-gradient(145deg, rgba(255,214,0,.115), rgba(255,214,0,.035) 68%);
+      box-shadow: inset 0 1px 0 rgba(255,214,0,.07);
+    }
+    .server-players-highlight {
+      display:flex;align-items:center;gap:15px;min-width:0;
+    }
+    .server-players-icon {
+      width:48px;height:48px;flex:none;display:grid;place-items:center;
+      border-radius:14px;color:var(--yellow);
+      border:1px solid rgba(255,214,0,.30);background:rgba(255,214,0,.08);
+    }
+    .server-players-icon svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+    .server-players-number {
+      color:var(--yellow);
+      font:700 clamp(45px,5vw,66px)/.92 var(--heading);
+      letter-spacing:-.025em;
+      font-variant-numeric:tabular-nums;
+      text-shadow:0 0 28px rgba(255,214,0,.16);
+    }
+    .server-players-subtitle{display:block;margin-top:12px;color:var(--muted);font-size:12px;line-height:1.5}
+    .server-players-field[data-players="active"] .server-players-icon{
+      color:#91e9b8;border-color:rgba(55,207,131,.4);background:rgba(55,207,131,.10);
+    }
+    .server-players-field[data-players="active"] .server-players-subtitle{color:#91e9b8}
+    .server-players-field[data-players="unknown"] .server-players-number{color:#b7c3d0;text-shadow:none}
+    @media(max-width:600px){.server-players-highlight{gap:10px}.server-players-icon{width:38px;height:38px;border-radius:10px}.server-players-icon svg{width:22px;height:22px}.server-players-number{font-size:46px}}
     .server-status-meta{margin:17px 0 0;font:400 12px/1.5 var(--body);color:var(--muted)}
     @media(max-width:600px) {
       .server-status-card {padding:22px 19px}
@@ -381,9 +410,13 @@
           <span id="server-status-state" class="server-status-pill" data-state="unconfigured" role="status" aria-live="polite">Sin configurar</span>
         </div>
         <div class="server-status-grid">
-          <div class="server-status-field">
+          <div class="server-status-field server-players-field" id="server-players-field" data-players="unknown">
             <span class="server-status-label">Jugadores conectados</span>
-            <span id="server-status-players" class="server-status-value" aria-live="polite">—</span>
+            <div class="server-players-highlight">
+              <span class="server-players-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3"/><path d="M3 19v-2a6 6 0 0 1 12 0v2H3ZM17 5a3 3 0 0 1 0 6M18 14a5 5 0 0 1 3 5"/></svg></span>
+              <span id="server-status-players" class="server-players-number" aria-live="polite">—</span>
+            </div>
+            <span id="server-players-subtitle" class="server-players-subtitle">Esperando datos del servidor</span>
           </div>
           <div class="server-status-field">
             <span class="server-status-label">Juego</span>
@@ -537,6 +570,19 @@
     (() => {
       const badge = document.getElementById('server-status-state');
       const players = document.getElementById('server-status-players');
+      const playersField = document.getElementById('server-players-field');
+      const playersSubtitle = document.getElementById('server-players-subtitle');
+      function displayPlayers(value) {
+        if (!Number.isInteger(value) || value < 0) {
+          players.textContent = '—';
+          playersField.dataset.players = 'unknown';
+          playersSubtitle.textContent = 'Dato no disponible';
+        } else {
+          players.textContent = String(value);
+          playersField.dataset.players = value > 0 ? 'active' : 'empty';
+          playersSubtitle.textContent = value === 0 ? 'Sin jugadores conectados' : value === 1 ? '1 jugador en el servidor' : value + ' jugadores en el servidor';
+        }
+      }
       const updated = document.getElementById('server-status-updated');
       if (!badge || !players || !updated) return;
       const labels = {
@@ -551,7 +597,7 @@
           const state = Object.hasOwn(labels,data.status) ? data.status : 'unavailable';
           badge.dataset.state = state;
           badge.textContent = labels[state];
-          players.textContent = Number.isInteger(data.players) && data.players >= 0 ? String(data.players) : '—';
+          displayPlayers(data.players);
           if (state === 'unconfigured') {
             updated.textContent = 'Los datos se mostrarán cuando el servidor esté conectado.';
           } else if (data.checkedAt && !isNaN(Date.parse(data.checkedAt))) {
@@ -562,7 +608,7 @@
         } catch {
           badge.dataset.state='unavailable';
           badge.textContent='No disponible';
-          players.textContent='—';
+          displayPlayers(null);
           updated.textContent='No fue posible consultar los datos del servidor.';
         }
       }
