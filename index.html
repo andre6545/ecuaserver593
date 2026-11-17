@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0f14">
   <meta name="description" content="EcuaServer +593. Una pequeña comunidad del juego American Truck Simulator para jugar mutuamente y recorrer las vias de todo el Ecuador.">
+  <link rel="canonical" href="https://ecuaserver593.vercel.app/">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_EC">
+  <meta property="og:site_name" content="EcuaServer +593">
+  <meta property="og:title" content="EcuaServer +593 | American Truck Simulator">
+  <meta property="og:description" content="Comunidad ecuatoriana de American Truck Simulator. Recorremos juntos las vías del Ecuador.">
+  <meta property="og:url" content="https://ecuaserver593.vercel.app/">
+  <meta property="og:image" content="https://ecuaserver593.vercel.app/social-cover.svg">
+  <meta property="og:image:alt" content="EcuaServer +593, comunidad ecuatoriana de American Truck Simulator">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="EcuaServer +593">
+  <meta name="twitter:description" content="Comunidad ecuatoriana de American Truck Simulator">
+  <meta name="twitter:image" content="https://ecuaserver593.vercel.app/social-cover.svg">
   <title>EcuaServer +593</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -403,6 +417,33 @@
       .server-history-panel{padding:12px}
     }
     @media(prefers-reduced-motion:reduce){.server-refresh[aria-busy="true"] svg{animation:none}}
+
+    /* Lanzamiento: navegación, accesibilidad, galería ampliable y pie de página */
+    .launch-nav{display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:flex-end}
+    .launch-nav a{color:#d7e0e9;text-decoration:none;border:1px solid transparent;padding:8px 11px;border-radius:9px;font:600 12px/1.2 var(--body);transition:color .2s,background .2s}
+    .launch-nav a:hover,.launch-nav a:focus-visible{color:var(--yellow);border-color:rgba(255,214,0,.22);background:rgba(255,214,0,.06)}
+    .launch-nav a:focus-visible,.gallery-photo button:focus-visible,.gallery-lightbox button:focus-visible{outline:2px solid var(--yellow);outline-offset:3px}
+    .launch-footer{border-top:1px solid var(--edge);margin-top:75px;padding:30px 0 40px;display:flex;gap:18px;justify-content:space-between;align-items:center;flex-wrap:wrap}
+    .launch-footer strong{color:var(--yellow);font:700 20px var(--heading)}
+    .launch-footer p{margin:4px 0 0;color:var(--muted);font-size:12px}
+    .launch-footer nav{display:flex;flex-wrap:wrap;gap:18px}
+    .launch-footer a{color:#c8d3de;font-size:13px;text-decoration:none}
+    .launch-footer a:hover{color:var(--yellow)}
+    .gallery-photo{position:relative}
+    .gallery-photo .gallery-zoom{display:block;position:relative;width:100%;padding:0;border:0;background:transparent;color:inherit;cursor:zoom-in}
+    .gallery-photo .gallery-zoom img{display:block;width:100%;height:100%;object-fit:cover}
+    .gallery-photo .gallery-zoom:after{content:'⤢ Ampliar';position:absolute;right:11px;bottom:11px;padding:5px 10px;border-radius:7px;background:rgba(11,15,20,.86);color:white;font:600 12px var(--body)}
+    .gallery-lightbox{border:1px solid #49576a;border-radius:16px;padding:14px;background:#101720;color:#f6f8fb;width:min(96vw,1120px);max-height:95vh;box-shadow:0 28px 90px #000b}
+    .gallery-lightbox::backdrop{background:rgba(0,0,0,.88);backdrop-filter:blur(5px)}
+    .gallery-lightbox-head{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:10px}
+    .gallery-lightbox-close,.gallery-lightbox-arrow{border:1px solid #5b6570;background:#1c2835;color:#fff;border-radius:9px;padding:10px 14px;font:700 15px var(--body);cursor:pointer}
+    .gallery-lightbox-body{display:flex;gap:10px;align-items:center;justify-content:center}
+    .gallery-lightbox-body img{display:block;max-width:calc(100% - 110px);max-height:73vh;width:auto;height:auto;object-fit:contain;border-radius:9px}
+    .gallery-lightbox figcaption{color:#c4d0db;text-align:center;margin-top:12px;font-size:14px}
+    .gallery-lightbox-counter{color:var(--muted);font-size:12px}
+    @media(max-width:860px){.topbar{flex-wrap:wrap;gap:12px}.launch-nav{order:3;width:100%;justify-content:center}.launch-nav a{font-size:12px;padding:8px 9px}}
+    @media(max-width:540px){.launch-nav{justify-content:space-between}.launch-nav a{font-size:11px;padding:7px 5px}.gallery-lightbox{padding:9px}.gallery-lightbox-body{gap:5px}.gallery-lightbox-body img{max-width:calc(100% - 72px)}.gallery-lightbox-arrow{padding:8px}.launch-footer{margin-top:45px}}
+    @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
   </style>
 </head>
 <body>
@@ -417,6 +458,10 @@
         </span>
         <span>ECUASERVER <strong>+593</strong></span>
       </a>
+      <nav class="launch-nav" aria-label="Navegación principal">
+        <a href="#estado-servidor">Servidor</a><a href="#equipo">Equipo</a><a href="#galeria">Fotografías</a>
+        <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Discord</a>
+      </nav>
       <div class="flag" aria-hidden="true"><span class="y"></span><span class="b"></span><span class="r"></span></div>
     </header>
     <main>
@@ -586,6 +631,27 @@
       <div id="gallery-track" class="gallery-track" aria-label="Fotografías de EcuaServer +593" hidden></div>
       <a class="gallery-admin-link" href="/admin.html">Administrar fotografías ↗</a>
     </section>
+    <footer class="launch-footer">
+      <div><strong>EcuaServer +593</strong><p>Comunidad de American Truck Simulator · Ecuador</p></div>
+      <nav aria-label="Enlaces del pie de página">
+        <a href="#estado-servidor">Estado del servidor</a>
+        <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Soporte</a>
+        <a href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer">Compra aquí</a>
+      </nav>
+    </footer>
+    <dialog id="gallery-lightbox" class="gallery-lightbox" aria-label="Fotografía ampliada">
+      <div class="gallery-lightbox-head">
+        <span id="gallery-lightbox-counter" class="gallery-lightbox-counter"></span>
+        <button type="button" id="gallery-lightbox-close" class="gallery-lightbox-close" aria-label="Cerrar fotografía">Cerrar ✕</button>
+      </div>
+      <div class="gallery-lightbox-body">
+        <button type="button" id="gallery-lightbox-prev" class="gallery-lightbox-arrow" aria-label="Fotografía anterior">‹</button>
+        <img id="gallery-lightbox-image" alt="">
+        <button type="button" id="gallery-lightbox-next" class="gallery-lightbox-arrow" aria-label="Fotografía siguiente">›</button>
+      </div>
+      <figcaption id="gallery-lightbox-caption"></figcaption>
+    </dialog>
   </div>
   <script>
     (() => {
@@ -621,6 +687,41 @@
       const heading = document.getElementById('gallery-heading');
       const prev = document.getElementById('gallery-prev');
       const next = document.getElementById('gallery-next');
+      const modal = document.getElementById('gallery-lightbox');
+      const modalImage = document.getElementById('gallery-lightbox-image');
+      const modalCaption = document.getElementById('gallery-lightbox-caption');
+      const modalCounter = document.getElementById('gallery-lightbox-counter');
+      const modalPrev = document.getElementById('gallery-lightbox-prev');
+      const modalNext = document.getElementById('gallery-lightbox-next');
+      const modalClose = document.getElementById('gallery-lightbox-close');
+      let galleryPhotos = [];
+      let activePhoto = 0;
+      function showPhoto(index) {
+        if (!galleryPhotos.length) return;
+        activePhoto = (index + galleryPhotos.length) % galleryPhotos.length;
+        const photo = galleryPhotos[activePhoto];
+        modalImage.src = photo.src;
+        modalImage.alt = photo.caption || 'Fotografía de EcuaServer +593';
+        modalCaption.textContent = photo.caption || '';
+        modalCounter.textContent = (activePhoto + 1) + ' / ' + galleryPhotos.length;
+        modalPrev.disabled = galleryPhotos.length < 2;
+        modalNext.disabled = galleryPhotos.length < 2;
+      }
+      function openPhoto(index) {
+        if (typeof modal.showModal !== 'function') return;
+        showPhoto(index);
+        modal.showModal();
+      }
+      modalPrev.addEventListener('click', () => showPhoto(activePhoto - 1));
+      modalNext.addEventListener('click', () => showPhoto(activePhoto + 1));
+      modalClose.addEventListener('click', () => modal.close());
+      modal.addEventListener('click', e => { if (e.target === modal) modal.close(); });
+      modal.addEventListener('keydown', e => {
+        if (e.key === 'ArrowRight') {e.preventDefault();showPhoto(activePhoto + 1);}
+        if (e.key === 'ArrowLeft') {e.preventDefault();showPhoto(activePhoto - 1);}
+      });
+      modal.addEventListener('close', () => {modalImage.removeAttribute('src');});
+
 
       async function retrieve(path) {
         const response = await fetch(endpoint + '/rest/v1/' + path, {headers: {apikey: apiKey}});
@@ -635,8 +736,12 @@
           ]);
           if(settings[0] && settings[0].title) heading.textContent = settings[0].title;
           if(photos.length === 0) return;
+          galleryPhotos = photos.map(photo => ({
+            src: endpoint + '/storage/v1/object/public/' + bucket + '/' + encodeURIComponent(photo.object_path),
+            caption: photo.caption || ''
+          }));
           const fragment = document.createDocumentFragment();
-          for (const photo of photos) {
+          for (const [index, photo] of photos.entries()) {
             const card = document.createElement('figure');
             card.className = 'gallery-photo';
             card.style.margin = '0';
@@ -645,7 +750,13 @@
             image.loading = 'lazy';
             image.decoding = 'async';
             image.alt = photo.caption || 'Fotografía de EcuaServer +593';
-            card.append(image);
+            const zoom = document.createElement('button');
+            zoom.type = 'button';
+            zoom.className = 'gallery-zoom';
+            zoom.setAttribute('aria-label', 'Ampliar fotografía ' + (index + 1));
+            zoom.addEventListener('click', () => openPhoto(index));
+            zoom.append(image);
+            card.append(zoom);
             if(photo.caption) {
               const caption = document.createElement('figcaption');
               caption.className = 'gallery-caption';
