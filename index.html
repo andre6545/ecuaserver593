@@ -25,6 +25,7 @@
   <meta name="twitter:description" content="Comunidad ecuatoriana de American Truck Simulator">
   <meta name="twitter:image" content="https://www.ecuaserver.xyz/assets/brand/social-card.jpg">
   <title>EcuaServer +593</title>
+  <link rel="stylesheet" href="/guide.css">
   <link rel="preload" as="image" href="/assets/brand/hero-banner.webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1134,6 +1135,7 @@
       <nav class="launch-nav" id="main-navigation" aria-label="Navegación principal">
         <a href="#estado-servidor" data-section="estado-servidor">Servidor</a><a href="#equipo" data-section="equipo">Equipo</a><a href="#galeria" data-section="galeria">Preventa</a>
         <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Discord</a>
+        <a href="#como-jugar" data-section="como-jugar" data-open-guide>Cómo jugar</a>
       </nav>
     </header>
     <section class="official-banner" aria-label="Imagen oficial de EcuaServer +593">
@@ -1252,6 +1254,14 @@
       <div id="gallery-empty" class="gallery-empty" role="status">Todavía no hay fotografías publicadas.</div>
       <div id="gallery-track" class="gallery-track" aria-label="Fotografías de EcuaServer +593" hidden></div>
       <a class="gallery-admin-link" href="/admin.html">Administrar fotografías ↗</a>
+    </section>
+    <section id="como-jugar" class="guide-section showcase-reveal" aria-labelledby="guide-section-title">
+      <div>
+        <span class="section-kicker">TU PRÓXIMA RUTA COMIENZA AQUÍ</span>
+        <h2 id="guide-section-title">Guía del <span>Conductor +593</span></h2>
+        <p>¿Nuevo en American Truck Simulator o en nuestra comunidad? Sigue siete pasos sencillos para instalar el juego, revisar la conexión, conocer el Mapa Ecuador y unirte a EcuaServer +593.</p>
+      </div>
+      <button type="button" class="guide-open-button" data-open-guide>Comenzar guía →</button>
     </section>
     <footer class="launch-footer" aria-label="Información y enlaces de EcuaServer +593">
       <div class="footer-identity">
@@ -1416,8 +1426,29 @@
     })();
   </script>
 
+  <div class="guide-overlay" id="guide-overlay" hidden></div>
+  <aside class="guide-drawer" id="guide-drawer" role="dialog" aria-modal="true" aria-label="Guía del Conductor +593" aria-hidden="true" hidden>
+    <div class="guide-head">
+      <div><span class="guide-brand">🚛 GUÍA DEL CONDUCTOR +593</span><span class="guide-subtitle">Asistente EcuaServer +593</span></div>
+      <button type="button" class="guide-icon-button" id="guide-close" aria-label="Cerrar guía">✕</button>
+    </div>
+    <div class="guide-main">
+      <p class="guide-welcome">¡Bienvenido a EcuaServer +593!</p>
+      <div class="guide-progress-header"><span id="guide-progress-label">Paso 1 de 7</span><span>Tu progreso se guarda aquí</span></div>
+      <div class="guide-progress" id="guide-progress" aria-label="Progreso de la guía"></div>
+      <div id="guide-content"></div>
+      <label class="guide-setting"><input id="guide-sounds" type="checkbox"> Activar sonidos suaves de navegación</label>
+      <p class="guide-status" id="guide-announcement" role="status" aria-live="polite"></p>
+    </div>
+    <div class="guide-footer">
+      <button type="button" id="guide-prev">← Atrás</button>
+      <button type="button" id="guide-skip">Omitir este paso</button>
+      <button type="button" id="guide-next" class="primary guide-forward">Siguiente →</button>
+    </div>
+  </aside>
   <button type="button" class="back-to-top" id="back-to-top" aria-label="Volver al principio" hidden>↑</button>
   <script defer src="/server-dashboard.js"></script>
   <script defer src="/site-interactions.js"></script>
+  <script defer src="/guide.js"></script>
 </body>
 </html>
