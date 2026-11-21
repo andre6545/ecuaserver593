@@ -10,7 +10,6 @@
   const players = $('server-status-players');
   const playersField = $('server-players-field');
   const playersSubtitle = $('server-players-subtitle');
-  const updated = $('server-status-updated');
   const refresh = $('server-refresh');
   const uptime = $('server-uptime');
   const notice = $('server-notice');
@@ -62,21 +61,12 @@
       badge.textContent = labels[state];
       showPlayers(data.players);
       uptime.textContent = state === 'online' ? displayUptime(data.uptimeSeconds) : '—';
-      if (state === 'unconfigured') {
-        updated.textContent = 'La conexión con el servidor todavía no está configurada.';
-      } else if (typeof data.checkedAt === 'string' && !Number.isNaN(Date.parse(data.checkedAt))) {
-        updated.textContent = 'Última consulta: ' + new Date(data.checkedAt).toLocaleString('es-EC',{
-          day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'
-        });
-      } else {
-        updated.textContent = 'No fue posible confirmar el estado del servidor.';
-      }
+
     } catch {
       badge.dataset.state = 'unavailable';
       badge.textContent = 'No disponible';
       showPlayers(null);
       uptime.textContent = '—';
-      updated.textContent = 'No fue posible consultar el servidor. Puedes intentarlo de nuevo.';
     } finally {
       busy = false;
       refresh.removeAttribute('aria-busy');
