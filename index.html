@@ -1069,11 +1069,28 @@
     @media(max-width:380px){
       .official-banner-caption .banner-quick-links{grid-template-columns:1fr}
     }
+
+    /* Accesos definitivos: comprar junto al estado, sin franja inferior duplicada */
+    .official-banner-caption .banner-quick-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px}
+    .official-banner-caption .banner-quick-links .banner-buy{display:inline-flex;align-items:center;justify-content:center;gap:12px;min-height:42px;padding:11px 16px;border:1px solid rgba(232,189,115,.55);border-radius:5px;background:rgba(21,27,35,.93);color:#f4d7a1;text-decoration:none;font:800 11px/1.2 var(--body);transition:background .2s,transform .2s,border-color .2s}
+    .official-banner-caption .banner-quick-links .banner-buy:hover{background:#2a2925;border-color:#f4d7a1;transform:translateY(-2px)}
+    .official-banner-caption .banner-quick-links .banner-buy:focus-visible{outline:2px solid #f4d7a1;outline-offset:3px}
+    .server-status-section{margin-top:clamp(18px,3vw,34px)}
+    @media(max-width:580px){
+      .official-banner-caption .banner-quick-links{display:flex;flex-wrap:wrap;gap:8px}
+      .official-banner-caption .banner-quick-links a{flex:1 1 calc(50% - 8px);min-width:0;padding:11px 9px}
+      .official-banner-caption .banner-quick-links .banner-buy{flex:1 1 100%;font-size:11px}
+    }
+    @media(max-width:380px){
+      .official-banner-caption .banner-quick-links{display:flex;flex-direction:column;align-items:stretch}
+      .official-banner-caption .banner-quick-links a,.official-banner-caption .banner-quick-links .banner-buy{width:100%;flex:auto}
+    }
+    @media(prefers-reduced-motion:reduce){.official-banner-caption .banner-quick-links .banner-buy{transition:none}}
   </style>
 </head>
 <body>
   <div id="scroll-progress" class="scroll-progress" aria-hidden="true"></div>
-  <a href="#contenido-principal" class="skip-content">Saltar al contenido</a>
+  <a href="#estado-servidor" class="skip-content">Saltar al contenido</a>
   <div class="flag-line" aria-hidden="true"></div>
   <div class="container">
     <header class="topbar" id="site-header">
@@ -1100,25 +1117,12 @@
           <div class="banner-quick-links" aria-label="Accesos a la comunidad">
             <a class="banner-join" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Únete a Discord <span aria-hidden="true">↗</span></a>
             <a class="banner-explore" href="#estado-servidor">Ver estado del servidor <span aria-hidden="true">↓</span></a>
+            <a class="banner-buy" href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer">Comprar Mapa Aqui <span aria-hidden="true">↗</span></a>
           </div>
         </div>
 
       </div>
     </section>
-    <main class="compact-community-main" id="contenido-principal">
-      <section class="community-access showcase-reveal" aria-label="Accesos de EcuaServer +593">
-        <div class="community-access-copy">
-          <span class="community-access-kicker">ENLACES DE LA COMUNIDAD · ECUADOR</span>
-          <p>Recorre las rutas, conoce a nuestra comunidad y comparte el camino.</p>
-        </div>
-        <div class="community-access-buttons">
-          <a class="community-access-link community-access-discord" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer"><span class="cta-icon" aria-hidden="true">◈</span> Discord <span aria-hidden="true">↗</span></a>
-          <a class="community-access-link community-access-buy" href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer"><span class="cta-icon" aria-hidden="true">✦</span> Comprar <span aria-hidden="true">↗</span></a>
-          <a class="community-access-link community-access-support" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer"><span class="cta-icon" aria-hidden="true">?</span> Soporte <span aria-hidden="true">↗</span></a>
-        </div>
-      </section>
-    </main>
-
     <section id="estado-servidor" class="server-status-section showcase-reveal" aria-labelledby="server-status-heading">
       <div class="server-status-card server-status-modern">
         <div class="server-status-head">
