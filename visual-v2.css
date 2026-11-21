@@ -297,3 +297,22 @@ body.visual-v2 {
   }
   .visual-v2 .v2-quicklink,.visual-v2 .v2-operations-heading{opacity:1!important;transform:none!important}
 }
+
+/* Interactive parity for button-based guide quicklink */
+.visual-v2 button.v2-quicklink{
+  appearance:none;
+  -webkit-appearance:none;
+  cursor:pointer;
+  text-align:left;
+  width:100%;
+  font:inherit;
+  color:#f6f4ef;
+}
+.visual-v2 button.v2-quicklink strong{display:block}
+.visual-v2 .v2-quicklink:focus-visible{outline:3px solid #ffda85;outline-offset:4px}
+.visual-v2 .server-status-pill[data-state="online"]{color:#b9f5d0}
+@media(max-width:700px){
+ .visual-v2 .gallery-control,.visual-v2 .guide-open-button,.visual-v2 .v2-quicklink{min-height:44px}
+ .visual-v2 .server-status-modern-grid{min-width:0}
+ .visual-v2 .server-identity-bar{min-width:0}
+}
