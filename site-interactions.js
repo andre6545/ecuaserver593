@@ -33,6 +33,29 @@
     window.matchMedia('(min-width: 821px)').addEventListener('change', e => {if (e.matches) closeMenu();});
   }
 
+
+  // Resaltado accesible de la sección actual; no modifica enlaces ni navegación.
+  const sectionLinks = Array.from(document.querySelectorAll('#main-navigation a[data-section]'));
+  if (sectionLinks.length && 'IntersectionObserver' in window) {
+    const sections = sectionLinks.map(link => document.getElementById(link.dataset.section)).filter(Boolean);
+    const setActive = id => {
+      sectionLinks.forEach(link => {
+        const active = link.dataset.section === id;
+        link.classList.toggle('is-active', active);
+        if (active) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+    const sectionObserver = new IntersectionObserver(entries => {
+      const visible = entries.filter(entry => entry.isIntersecting);
+      if (!visible.length) return;
+      visible.sort((a,b) => b.intersectionRatio-a.intersectionRatio);
+      setActive(visible[0].target.id);
+    }, {rootMargin:'-18% 0px -48% 0px',threshold:[0,.15,.35,.6]});
+    sections.forEach(section => sectionObserver.observe(section));
+    sectionLinks.forEach(link => link.addEventListener('click', () => setActive(link.dataset.section)));
+  }
+
   let scheduled = false;
   const onScroll = () => {
     if (scheduled) return;
