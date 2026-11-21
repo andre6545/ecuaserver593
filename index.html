@@ -568,6 +568,96 @@
       .launch-footer strong{font-size:20px}
     }
     @media(prefers-reduced-motion:reduce){.route-art img{transition:none}}
+
+    /* Portada viva: imagen original protagonista, identidad de comunidad y estado real ATS. */
+    .official-banner{position:relative;margin-top:18px;border-radius:17px;background:#101318;isolation:isolate;border-color:rgba(234,211,170,.25);box-shadow:0 28px 85px rgba(0,0,0,.37)}
+    .official-banner:before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;border-radius:inherit;border:1px solid rgba(248,221,157,.13)}
+    .official-banner-media{position:relative;overflow:hidden;line-height:0;min-height:320px}
+    .official-banner-media:after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(7,9,13,.04) 32%,rgba(7,9,13,.27) 70%,rgba(7,9,13,.86) 100%)}
+    .official-banner-media img{width:100%;height:auto;max-height:clamp(385px,52vw,645px);object-fit:cover;object-position:50% 48%;filter:saturate(.92) contrast(1.04);transition:transform 1.4s cubic-bezier(.2,.75,.3,1),filter .6s}
+    @media(hover:hover) and (prefers-reduced-motion:no-preference){.official-banner:hover .official-banner-media img{transform:scale(1.035);filter:saturate(1.03) contrast(1.05)}}
+    .official-banner-caption{position:relative;z-index:3;margin-top:-90px;min-height:210px;display:flex;align-items:end;justify-content:space-between;gap:22px;background:linear-gradient(180deg,transparent,rgba(11,14,18,.98) 42%);padding:40px clamp(21px,4vw,55px) 31px}
+    .banner-message{max-width:min(750px,75%);min-width:0}
+    .official-banner-caption .eyebrow{display:inline-flex;align-items:center;gap:10px;letter-spacing:.19em;font-size:10px;color:#f0c985}
+    .ecu-dot{display:inline-block;width:7px;height:7px;background:#e8c276;border-radius:50%;box-shadow:0 0 12px rgba(246,206,133,.46)}
+    .official-banner-caption h2{font:800 clamp(34px,4.4vw,64px)/.98 var(--heading);letter-spacing:.002em;text-transform:none;color:#fff;margin:15px 0 8px;text-shadow:0 3px 16px #000b}
+    .banner-gold{color:#edc477}
+    .official-banner-caption p{font:500 clamp(12px,1.13vw,15px)/1.6 var(--body);color:#d7d9dd;letter-spacing:0;max-width:52ch}
+    .banner-quick-links{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin-top:19px}
+    .official-banner-caption .banner-join,.official-banner-caption .banner-explore{border-radius:6px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:15px;min-height:44px;padding:11px 18px;font:800 12px/1.2 var(--body);letter-spacing:0;white-space:nowrap;transition:background .18s,transform .18s,border-color .18s}
+    .official-banner-caption .banner-join{background:#e7bf74;border:1px solid #e7bf74;color:#15130f}
+    .official-banner-caption .banner-explore{background:rgba(15,19,25,.55);border:1px solid rgba(226,214,190,.4);color:#fff}
+    .official-banner-caption .banner-join:hover{background:#f3d79e;transform:translateY(-2px)}
+    .official-banner-caption .banner-explore:hover{background:rgba(226,190,122,.12);border-color:#e7bf74;transform:translateY(-2px)}
+    .banner-live-card{flex:0 0 210px;min-height:170px;display:flex;flex-direction:column;gap:9px;padding:19px;border:1px solid rgba(236,215,177,.24);border-radius:10px;background:linear-gradient(145deg,rgba(28,33,38,.92),rgba(13,18,23,.92));box-shadow:0 13px 25px rgba(0,0,0,.25);color:#f5f3ef;text-decoration:none;backdrop-filter:blur(12px);transition:border-color .2s,transform .2s}
+    .banner-live-card:hover{transform:translateY(-3px);border-color:rgba(236,191,117,.7)}
+    .banner-live-head{font:700 10px/1.3 var(--body);color:#d8d6cd;display:flex;gap:9px;align-items:center;text-transform:uppercase;letter-spacing:.075em}
+    .banner-live-dot{width:9px;height:9px;border-radius:50%;flex:none;background:#838e97}
+    .banner-live-card[data-status="online"] .banner-live-dot{background:#4acf99;box-shadow:0 0 0 4px rgba(74,207,153,.12)}
+    .banner-live-card[data-status="offline"] .banner-live-dot{background:#f18484}
+    .banner-live-count{display:flex;align-items:center;gap:12px}
+    .banner-live-count strong{font:800 clamp(38px,4vw,52px)/1 var(--heading);font-variant-numeric:tabular-nums;color:#eec781}
+    .banner-live-count span{font:600 11px/1.5 var(--body);color:#bdc4cb;max-width:85px}
+    .banner-live-more{font:700 10px var(--body);color:#efcc91;margin-top:auto;display:flex;justify-content:space-between;gap:10px}
+    .hero{align-items:start;gap:clamp(35px,4.5vw,68px)}
+    main{padding-block:clamp(55px,6vw,80px)}
+    .hero-copy{padding-top:clamp(5px,1.8vw,28px)}
+    .accent-rule .intro-eyebrow{font:800 11px var(--body);letter-spacing:.2em;color:#e1bb79}
+    .hero-copy h1{font:800 clamp(47px,5vw,72px)/.99 var(--heading);letter-spacing:0;max-width:630px;margin:20px 0 25px;text-transform:none;text-wrap:balance}
+    .hero-copy h1 span{display:inline;color:#e6bf72}
+    .hero-copy .about{margin-top:20px}
+    .hero-copy .about p{max-width:53ch}
+    .panel-overline{display:flex;align-items:center;gap:10px;font:800 10px var(--body);letter-spacing:.14em;color:#c9b994}
+    .panel-overline .panel-line{width:25px;height:2px}
+    .panel-corner{font:700 11px var(--body);letter-spacing:.12em;color:#8f9a9e}
+    .info-panel{padding:21px 23px 23px}
+    .route-art{aspect-ratio:16/8.4}
+    .specs{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+    .spec{min-width:0;border-bottom:0;padding:14px 0 0}
+    .spec + .spec{border-left:1px solid var(--edge);padding-left:16px}
+    .spec-value{font-size:clamp(18px,2.2vw,27px);word-break:break-word}
+    .spec-version{font-size:clamp(19px,2.2vw,26px)}
+    .copy-btn{padding:7px}
+    .id-row{align-items:start;gap:6px}
+    .official-banner a:focus-visible,.banner-live-card:focus-visible{outline:2px solid #ffdb9d;outline-offset:4px}
+    @media(max-width:1000px){
+      .official-banner-caption{margin-top:-65px;align-items:end}
+      .banner-live-card{flex-basis:175px;min-height:155px;padding:15px}
+      .specs{grid-template-columns:1fr;gap:0}
+      .spec + .spec{border-left:0;padding:13px 0 0}
+      .spec{border-bottom:1px solid var(--edge)}
+    }
+    @media(max-width:850px){
+      .official-banner-caption{gap:18px}
+      .banner-message{max-width:100%}
+      .hero{grid-template-columns:1fr}
+      .specs{grid-template-columns:repeat(2,minmax(0,1fr))}
+      .spec + .spec{border-left:1px solid var(--edge);padding-left:16px}
+      .route-art{aspect-ratio:16/9}
+    }
+    @media(max-width:650px){
+      .official-banner{margin-top:13px}
+      .official-banner-media{min-height:0}
+      .official-banner-media img{height:clamp(235px,58vw,365px);max-height:none;object-fit:cover}
+      .official-banner-caption{margin-top:0;display:block;min-height:0;padding:23px 19px 19px;background:#11161b}
+      .official-banner-caption h2{font-size:clamp(32px,8vw,46px);margin-top:12px}
+      .official-banner-caption p{font-size:12px}
+      .banner-quick-links{gap:8px}
+      .official-banner-caption .banner-join,.official-banner-caption .banner-explore{min-height:43px;flex:1 1 auto;padding:10px;font-size:11px}
+      .banner-live-card{margin-top:19px;min-height:0;display:grid;grid-template-columns:1fr auto;align-items:center;gap:7px;padding:13px 15px}
+      .banner-live-count{grid-row:span 2;grid-column:2}
+      .banner-live-count strong{font-size:34px}
+      .banner-live-count span{font-size:9px}
+      .banner-live-more{font-size:10px}
+      main{padding-block:45px 60px}
+      .hero-copy h1{font-size:clamp(43px,11vw,62px)}
+      .info-panel{padding:16px}
+      .specs{grid-template-columns:1fr}
+      .spec + .spec{border-left:0;padding-left:0}
+    }
+    @media(prefers-reduced-motion:reduce){
+      .official-banner-media img,.banner-live-card,.official-banner-caption a{transition:none!important;transform:none!important}
+    }
   </style>
 </head>
 <body>
@@ -591,20 +681,29 @@
         <img src="/assets/brand/hero-banner.webp" width="1672" height="941" fetchpriority="high" decoding="async" alt="Imagen oficial de EcuaServer +593, con camiones de American Truck Simulator, paisajes ecuatorianos, volcanes y los colores de Ecuador">
       </div>
       <div class="official-banner-caption">
-        <div>
-          <span class="eyebrow">ECUADOR · COMUNIDAD DE SIMULACIÓN</span>
-          <p>Un mismo camino. Muchas historias por recorrer.</p>
+        <div class="banner-message">
+          <span class="eyebrow"><span class="ecu-dot" aria-hidden="true"></span> ECUADOR · AMERICAN TRUCK SIMULATOR</span>
+          <h2>El camino nos une<span class="banner-gold">.</span></h2>
+          <p>Una comunidad, kilómetros de historias y rutas por descubrir.</p>
+          <div class="banner-quick-links" aria-label="Accesos a la comunidad">
+            <a class="banner-join" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Únete a Discord <span aria-hidden="true">↗</span></a>
+            <a class="banner-explore" href="#estado-servidor">Ver estado del servidor <span aria-hidden="true">↓</span></a>
+          </div>
         </div>
-        <a href="#estado-servidor">Explorar el servidor <span aria-hidden="true">↗</span></a>
+        <a class="banner-live-card" href="#estado-servidor" aria-label="Ver estado actual y jugadores del servidor">
+          <span class="banner-live-head"><span class="banner-live-dot" aria-hidden="true"></span><span id="banner-server-state">Consultando servidor</span></span>
+          <span class="banner-live-count"><strong id="banner-server-players">—</strong><span>Jugadores conectados</span></span>
+          <span class="banner-live-more">Estado del servidor <span aria-hidden="true">↗</span></span>
+        </a>
       </div>
     </section>
     <main>
       <div class="hero">
         <section class="hero-copy" aria-labelledby="site-title">
-          <div class="accent-rule" aria-hidden="true"><span class="rule"></span><span class="dots"><i></i><i></i><i></i></span></div>
-          <h1 id="site-title">EcuaServer <span>+593</span></h1>
+          <div class="accent-rule" aria-hidden="true"><span class="rule"></span><span class="intro-eyebrow">NUESTRA COMUNIDAD</span></div>
+          <h1 id="site-title">Más que un servidor. <span>Una comunidad.</span></h1>
           <div class="about">
-            <h2>¿Quiénes somos?</h2>
+            <h2>EcuaServer +593</h2>
             <p>EcuaServer +593 Una pequeña comunidad que busca crecer y formar una comunidad del juego American Truck Simulator, jugar mutuamente y recorrer las vias de todo el Ecuador.</p>
           </div>
           <div class="actions" aria-label="Enlaces">
@@ -614,7 +713,7 @@
           </div>
         </section>
         <aside class="info-panel" aria-label="Información de EcuaServer +593">
-          <div class="panel-top" aria-hidden="true"><div class="panel-line"></div><div class="panel-screws"><i></i><i></i></div></div>
+          <div class="panel-top"><span class="panel-overline"><span class="panel-line" aria-hidden="true"></span> IDENTIFICACIÓN DEL SERVIDOR</span><span class="panel-corner">+593 / EC</span></div>
           <figure class="truck-art route-art">
             <img src="/assets/brand/road-scene.webp" width="1150" height="1150" loading="lazy" decoding="async" alt="Ilustración oficial de EcuaServer +593 con un autobús y un camión en una carretera ecuatoriana al atardecer">
             <figcaption>Comunidad, rutas y amistad</figcaption>
