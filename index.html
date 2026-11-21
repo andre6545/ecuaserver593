@@ -5,6 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#0b0f14">
   <meta name="description" content="EcuaServer +593. Una pequeña comunidad del juego American Truck Simulator para jugar mutuamente y recorrer las vias de todo el Ecuador.">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="color-scheme" content="dark">
+  <script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"WebSite","name":"EcuaServer +593","url":"https://www.ecuaserver.xyz/","inLanguage":"es-EC","description":"Comunidad ecuatoriana de American Truck Simulator para recorrer las rutas del Ecuador.","publisher":{"@type":"Organization","name":"EcuaServer +593","url":"https://www.ecuaserver.xyz/","logo":"https://www.ecuaserver.xyz/assets/brand/logo.webp","sameAs":["https://discord.gg/cTk2V9feYF"]}}
+  </script>
   <link rel="canonical" href="https://www.ecuaserver.xyz/">
   <link rel="icon" type="image/png" href="/assets/brand/favicon.png">
   <meta property="og:type" content="website">
@@ -20,6 +25,7 @@
   <meta name="twitter:description" content="Comunidad ecuatoriana de American Truck Simulator">
   <meta name="twitter:image" content="https://www.ecuaserver.xyz/assets/brand/social-card.jpg">
   <title>EcuaServer +593</title>
+  <link rel="preload" as="image" href="/assets/brand/hero-banner.webp" fetchpriority="high">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1099,6 +1105,16 @@
       .server-status-head-actions{width:100%;justify-content:flex-end}
       .server-status-modern-grid .server-players-field{min-height:150px;padding:20px}
       .server-identity-bar{margin-top:12px}
+    }
+
+    /* Mobile: áreas táctiles y contención sin alterar las funciones existentes */
+    @media (pointer:coarse){
+      .launch-nav a,.gallery-control,.copy-btn,.server-refresh-btn,.gallery-lightbox-close,.gallery-lightbox-arrow{min-height:44px;min-width:44px}
+    }
+    @media (max-width:580px){
+      .official-banner-media img{width:100%;object-fit:cover}
+      .server-status-modern,.server-identity-block{max-width:100%;min-width:0}
+      .server-identity-value{overflow-wrap:anywhere}
     }
   </style>
 </head>
