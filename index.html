@@ -1119,8 +1119,9 @@
     }
   </style>
   <link rel="stylesheet" href="/hero-ecuador.css">
+  <link rel="stylesheet" href="/visual-v2.css">
 </head>
-<body>
+<body class="visual-v2">
   <div id="scroll-progress" class="scroll-progress" aria-hidden="true"></div>
   <a href="#estado-servidor" class="skip-content">Saltar al contenido</a>
   <div class="flag-line" aria-hidden="true"></div>
@@ -1207,6 +1208,12 @@
       </div>
     </section>
     <section id="estado-servidor" class="server-status-section showcase-reveal" aria-label="Estado del servidor EcuaServer +593">
+      <div class="v2-operations-heading">
+        <span class="v2-section-eyebrow">MONITOREO EN TIEMPO REAL · ATS</span>
+        <h2 class="v2-section-title">Centro de <span style="color:#e8b85e">operaciones</span></h2>
+        <p class="v2-section-lead">Consulta el estado del servidor, los jugadores conectados y la información oficial de nuestra comunidad.</p>
+        <div class="v2-tricolor" aria-hidden="true"><span></span><span></span><span></span></div>
+      </div>
       <div class="server-status-card server-status-modern">
         <div class="server-status-head">
           <div class="server-status-head-actions">
@@ -1256,6 +1263,14 @@
       </div>
     </section>
 
+    <section class="v2-quicklinks showcase-reveal" aria-label="Accesos rápidos de EcuaServer +593">
+      <div class="v2-quicklinks-grid">
+        <a class="v2-quicklink" href="#equipo"><span class="v2-quicklink-icon" aria-hidden="true">♛</span><strong>Nuestro equipo</strong><small>Conoce a las personas que hacen posible EcuaServer.</small></a>
+        <a class="v2-quicklink" href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer"><span class="v2-quicklink-icon" aria-hidden="true">▧</span><strong>Mapa Ecuador</strong><small>Consulta información y opciones de compra oficiales.</small></a>
+        <button type="button" class="v2-quicklink" data-open-guide><span class="v2-quicklink-icon" aria-hidden="true">☷</span><strong>Cómo jugar</strong><small>Abre la guía interactiva para nuevos conductores.</small></button>
+        <a class="v2-quicklink" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer"><span class="v2-quicklink-icon" aria-hidden="true">◉</span><strong>Discord oficial</strong><small>Únete a la comunidad y solicita ayuda.</small></a>
+      </div>
+    </section>
     <section id="equipo" class="staff-section showcase-reveal" aria-labelledby="staff-title">
       <div class="staff-heading">
         <span class="section-kicker">LAS PERSONAS DETRÁS DE LAS RUTAS</span>
@@ -1299,6 +1314,7 @@
       <div class="gallery-head">
         <span class="section-kicker gallery-kicker">POSTALES DE NUESTRA COMUNIDAD</span>
         <h2 id="gallery-heading">Galería de <span>fotografías</span></h2>
+        <p class="v2-section-lead">Postales y momentos compartidos por nuestra comunidad de conductores.</p>
         <div class="gallery-controls" aria-label="Desplazar fotografías">
           <button type="button" class="gallery-control" id="gallery-prev" aria-label="Fotografías anteriores" disabled><svg viewBox="0 0 24 24"><path d="m15 18-6-6 6-6"/></svg></button>
           <button type="button" class="gallery-control" id="gallery-next" aria-label="Fotografías siguientes" disabled><svg viewBox="0 0 24 24"><path d="m9 18 6-6-6-6"/></svg></button>
