@@ -26,7 +26,7 @@
   <meta name="twitter:image" content="https://www.ecuaserver.xyz/assets/brand/social-card.jpg">
   <title>EcuaServer +593</title>
   <link rel="stylesheet" href="/guide.css">
-  <link rel="preload" as="image" href="/assets/brand/hero-banner.webp" fetchpriority="high">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -1118,6 +1118,7 @@
       .server-identity-value{overflow-wrap:anywhere}
     }
   </style>
+  <link rel="stylesheet" href="/hero-ecuador.css">
 </head>
 <body>
   <div id="scroll-progress" class="scroll-progress" aria-hidden="true"></div>
@@ -1138,19 +1139,71 @@
         <a href="#como-jugar" data-section="como-jugar" data-open-guide>Cómo jugar</a>
       </nav>
     </header>
-    <section class="official-banner" aria-label="Imagen oficial de EcuaServer +593">
-      <div class="official-banner-media">
-        <img src="/assets/brand/hero-banner.webp" width="1672" height="941" fetchpriority="high" decoding="async" alt="Imagen oficial de EcuaServer +593, con camiones de American Truck Simulator, paisajes ecuatorianos, volcanes y los colores de Ecuador">
+    <section class="official-banner hero593" aria-label="EcuaServer +593 — portada de la comunidad">
+      <div class="hero593-bg" aria-hidden="true">
+        <div class="hero593-tricolor top"></div>
+        <div class="hero593-tricolor bottom"></div>
+        <div class="hero593-noise"></div>
+        <svg viewBox="0 0 1440 620" preserveAspectRatio="xMidYMid slice" role="presentation" focusable="false">
+          <defs>
+            <linearGradient id="hero593-sky" x2="0" y2="1"><stop stop-color="#071121"/><stop offset=".55" stop-color="#27324d"/><stop offset=".79" stop-color="#b56d3f"/><stop offset="1" stop-color="#090d15"/></linearGradient>
+            <linearGradient id="hero593-mountain" x2="0" y2="1"><stop stop-color="#d6ebf7"/><stop offset=".18" stop-color="#597494"/><stop offset=".55" stop-color="#1b2b44"/><stop offset="1" stop-color="#0d1729"/></linearGradient>
+            <linearGradient id="hero593-road" x2="0" y2="1"><stop stop-color="#323943"/><stop offset="1" stop-color="#080c13"/></linearGradient>
+            <linearGradient id="hero593-gold" x2="0" y2="1"><stop stop-color="#fffbd4"/><stop offset=".5" stop-color="#e4a72c"/><stop offset="1" stop-color="#7c4a15"/></linearGradient>
+            <filter id="hero593-light"><feGaussianBlur stdDeviation="7"/></filter>
+          </defs>
+          <path d="M0 340 130 304 225 342 335 282 463 328 592 205 685 270 811 107 884 184 970 147 1050 240 1172 194 1281 289 1440 227V620H0Z" fill="url(#hero593-mountain)" opacity=".68"/>
+          <path d="M566 260 811 107 885 184 968 147 1050 240 965 204 891 234 807 161 748 209 711 198Z" fill="#e7f5fd" opacity=".7"/>
+          <path d="M0 395Q300 320 520 400T1040 352T1440 377V620H0Z" fill="#09111b" opacity=".86"/>
+          <path d="M0 465Q300 417 750 469T1440 412V620H0Z" fill="#101925"/>
+          <path d="M0 560Q720 475 1440 548V620H0Z" fill="url(#hero593-road)"/>
+          <path d="M0 581Q720 514 1440 575" fill="none" stroke="#efae36" stroke-width="2" opacity=".65" filter="url(#hero593-light)"/>
+          <path d="M0 581Q720 514 1440 575" fill="none" stroke="#e2aa49" stroke-width="1.4" opacity=".6"/>
+          <g opacity=".5" fill="url(#hero593-gold)">
+            <path d="M1140 335h14v-56h18v56h10v-80h24v80h14v-46h13v46h13v-67h17v67h12v-38h12v38h17v-61h19v61h16v-50h12v50h14v-83h20v83h17v-43h12v43h15v-56h19v56h12v-35h11v35h17v-44h18v44h18v-25h14v25h21v72h-300Z"/>
+            <path d="M1152 335h12v-43h18v43h14v-78h21v78h16v-53h20v53h13v-91h24v91h14v-40h18v40h13v-64h19v64h21v-42h14v42h13v-58h23v58h16v-28h15v28h26v46h-304Z" fill="#070f1c"/>
+            <path d="M1240 248 1283 216 1318 246 1318 267 1240 267Z" fill="#182b40"/>
+          </g>
+          <g transform="translate(1123 235)" opacity=".72"><path d="M0 0q19-7 24-19l8-30 9 27 20 22-9 11-15-9-1 35h-14l-2-35-14 9Z" fill="#bbd4e4" stroke="#f4bc64" stroke-width="2"/><path d="M21 40h18v10H21Z" fill="#f4c981"/></g>
+          <g opacity=".57" stroke="#e5a441" fill="none" stroke-width="3">
+            <path d="M325 200 360 155 382 123 424 129 455 109 480 129 500 136 515 170 505 205 525 235 503 280 476 306 473 349 440 378 415 347 387 348 366 312 341 294 348 255 326 240Z" filter="url(#hero593-light)"/>
+            <path d="M325 200 360 155 382 123 424 129 455 109 480 129 500 136 515 170 505 205 525 235 503 280 476 306 473 349 440 378 415 347 387 348 366 312 341 294 348 255 326 240Z"/>
+          </g>
+          <g transform="translate(24 295)" opacity=".82">
+            <ellipse cx="214" cy="250" rx="185" ry="27" fill="#e5a039" opacity=".4" filter="url(#hero593-light)"/>
+            <path d="M6 75 87 13 232 13 242 186 14 186Z" fill="#b77920" stroke="#f6ce84" stroke-width="4"/>
+            <path d="M6 92 87 29 233 29 233 112H6Z" fill="#f7c529"/>
+            <path d="M6 127H235V149H6Z" fill="#136ac2"/>
+            <path d="M6 149H235V164H6Z" fill="#c32e3d"/>
+            <path d="M235 90h55l33 37 19 76H223V114Z" fill="#1c3a5c" stroke="#dcab62" stroke-width="4"/>
+            <path d="M290 99 323 137 322 148h-34Z" fill="#8bd6ff" opacity=".75"/>
+            <path d="M222 199h130v19H217Z" fill="#d4e2ee"/>
+            <path d="M334 165h32v20h-28Z" fill="#e0e7ef"/>
+            <path d="M239 146h32v53h-31Z" fill="#27333f"/>
+            <path d="M261 119h7v43h-7Z" fill="#f1b559"/>
+            <circle cx="250" cy="212" r="24" fill="#090d13" stroke="#d7e2eb" stroke-width="8"/>
+            <circle cx="328" cy="212" r="24" fill="#090d13" stroke="#d7e2eb" stroke-width="8"/>
+            <circle cx="74" cy="203" r="23" fill="#0c121d" stroke="#bfcbd6" stroke-width="7"/>
+            <circle cx="159" cy="203" r="23" fill="#0c121d" stroke="#bfcbd6" stroke-width="7"/>
+            <circle cx="348" cy="167" r="7" fill="#fff6be" filter="url(#hero593-light)"/>
+            <circle cx="348" cy="167" r="5" fill="#fff6be"/>
+            <g fill="#ffcf5c"><circle cx="250" cy="105" r="5"/><circle cx="273" cy="103" r="5"/><circle cx="294" cy="111" r="5"/></g>
+          </g>
+        </svg>
+        <span class="hero593-spark one"></span><span class="hero593-spark two"></span>
       </div>
-      <div class="official-banner-caption">
-        <div class="banner-message">
-          <div class="banner-quick-links" aria-label="Accesos a la comunidad">
-            <a class="banner-join" href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer">Únete a Discord <span aria-hidden="true">↗</span></a>
-            <a class="banner-explore" href="#estado-servidor">Ver estado del servidor <span aria-hidden="true">↓</span></a>
-            <a class="banner-buy" href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer">Comprar Mapa Aqui <span aria-hidden="true">↗</span></a>
-          </div>
-        </div>
-
+      <div class="hero593-main">
+        <h1 class="hero593-title" aria-label="ECUASERVER +593">
+          <span class="hero593-word">ECUASERVER</span>
+          <span class="hero593-code"><span class="h-yellow h-plus">+</span><span class="h-yellow">5</span><span class="h-blue">9</span><span class="h-red">3</span></span>
+        </h1>
+        <span class="hero593-accent-wings left" aria-hidden="true"></span>
+        <span class="hero593-accent-wings right" aria-hidden="true"></span>
+      </div>
+      <div class="hero593-actions" aria-label="Accesos rápidos a la comunidad">
+        <a href="https://discord.gg/cTk2V9feYF" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">◉</span> Únete a Discord ↗</a>
+        <a href="#estado-servidor"><span aria-hidden="true">▣</span> Ver estado del servidor ↓</a>
+        <a href="https://wa.link/k18cir" target="_blank" rel="noopener noreferrer"><span aria-hidden="true">▤</span> Comprar Mapa Aquí ↗</a>
       </div>
     </section>
     <section id="estado-servidor" class="server-status-section showcase-reveal" aria-label="Estado del servidor EcuaServer +593">
