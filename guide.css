@@ -1,0 +1,57 @@
+
+/* Guia del Conductor +593 — aislada del diseño existente */
+.guide-section{position:relative;margin:0 0 clamp(65px,8vw,105px);padding:clamp(28px,5vw,58px);border:1px solid rgba(231,191,111,.3);border-radius:18px;background:linear-gradient(125deg,#1b232d,#11171f 70%);display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px}
+.guide-section .section-kicker{color:#d9af67;font-size:12px;letter-spacing:.19em;text-transform:uppercase;font-weight:800}
+.guide-section h2{margin:12px 0;font-size:clamp(32px,4vw,54px);letter-spacing:0}
+.guide-section h2 span{color:#e4bc77}
+.guide-section p{margin:0;max-width:58ch;color:#c4cdd8;font-size:15px}
+.guide-open-button{cursor:pointer;border:1px solid #e5ba70;border-radius:9px;background:#e5ba70;color:#171a20;font:800 16px/1.1 var(--body,system-ui);padding:17px 23px;min-height:50px;transition:transform .15s ease,background .15s}
+.guide-open-button:hover{transform:translateY(-2px);background:#f1cd8c}
+.guide-overlay[hidden],.guide-drawer[hidden]{display:none!important}
+.guide-overlay{position:fixed;inset:0;z-index:990;background:rgba(4,8,13,.68)}
+.guide-drawer{--gd-bg:#f9fafb;--gd-panel:#fff;--gd-line:#d9dfe7;--gd-text:#19222d;--gd-muted:#4d5a6a;--gd-accent:#a97625;position:fixed;inset:0 0 0 auto;width:min(100%,450px);z-index:991;display:flex;flex-direction:column;background:var(--gd-bg);color:var(--gd-text);box-shadow:-18px 0 75px rgba(0,0,0,.4);font:400 14px/1.55 system-ui,sans-serif;color-scheme:light}
+.guide-drawer *{box-sizing:border-box}
+.guide-drawer button,.guide-drawer a{font:inherit}
+.guide-drawer button:focus-visible,.guide-drawer a:focus-visible{outline:3px solid var(--gd-accent);outline-offset:3px}
+.guide-drawer[aria-hidden="true"]{display:none}
+.guide-head{padding:18px 22px;border-bottom:1px solid var(--gd-line);display:flex;justify-content:space-between;align-items:center;gap:12px;background:var(--gd-panel)}
+.guide-brand{display:block;font-weight:800;font-size:15px;letter-spacing:.03em}
+.guide-subtitle{display:block;color:var(--gd-muted);font-size:12px}
+.guide-icon-button{width:40px;height:40px;flex:none;display:grid;place-items:center;border:1px solid var(--gd-line);background:transparent;border-radius:9px;color:var(--gd-text);cursor:pointer}
+.guide-main{padding:23px 22px;overflow:auto;overscroll-behavior:contain;flex:1}
+.guide-welcome{font-weight:650;color:var(--gd-muted);margin:0 0 18px}
+.guide-progress-header{display:flex;justify-content:space-between;color:var(--gd-muted);font-size:12px;font-weight:700;margin-bottom:9px}
+.guide-progress{display:grid;grid-template-columns:repeat(7,1fr);gap:5px;margin-bottom:26px}
+.guide-progress span{height:6px;border-radius:5px;background:var(--gd-line)}
+.guide-progress span.done{background:#b7863d}.guide-progress span.current{background:#7b5728}
+.guide-step-title{font-size:clamp(22px,5vw,27px);font-weight:800;line-height:1.25;margin:0 0 12px;color:var(--gd-text)}
+.guide-description{color:var(--gd-muted);margin:0 0 22px}
+.guide-options{display:grid;gap:10px}
+.guide-option{display:flex;align-items:center;gap:12px;text-align:left;min-height:50px;padding:13px;border:1px solid var(--gd-line);border-radius:10px;background:var(--gd-panel);color:var(--gd-text);cursor:pointer}
+.guide-option[aria-pressed="true"]{border-color:var(--gd-accent);background:color-mix(in srgb,var(--gd-accent) 9%,var(--gd-panel))}
+.guide-option-indicator{width:17px;height:17px;border:2px solid currentColor;border-radius:50%;flex:none;opacity:.7}
+.guide-option[aria-pressed="true"] .guide-option-indicator{border:5px solid var(--gd-accent)}
+.guide-response{margin-top:20px;padding:17px;background:var(--gd-panel);border:1px solid var(--gd-line);border-left:3px solid var(--gd-accent);border-radius:9px}
+.guide-response strong{display:block;margin-bottom:7px;color:var(--gd-accent)}
+.guide-response p{margin:0 0 10px;color:var(--gd-text);line-height:1.65}
+.guide-response code{font-size:12px;overflow-wrap:anywhere}
+.guide-action{display:inline-flex;justify-content:center;align-items:center;gap:8px;padding:11px 14px;margin-top:10px;border:1px solid var(--gd-accent);border-radius:8px;text-decoration:none;background:var(--gd-accent);color:#fff;cursor:pointer;font-weight:700!important;max-width:100%;overflow-wrap:anywhere}
+.guide-secondary{background:transparent;color:var(--gd-text);border-color:var(--gd-line)}
+.guide-status{font-size:12px;color:var(--gd-muted);margin-top:9px}
+.guide-footer{padding:15px 22px;border-top:1px solid var(--gd-line);background:var(--gd-panel);display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.guide-footer button{padding:10px 12px;border:1px solid var(--gd-line);border-radius:8px;background:transparent;color:var(--gd-text);cursor:pointer;min-height:42px}
+.guide-footer button.primary{background:var(--gd-accent);border-color:var(--gd-accent);color:white;font-weight:700}
+.guide-footer button:disabled{opacity:.35;cursor:not-allowed}
+.guide-footer .guide-forward{margin-left:auto}
+.guide-complete{text-align:center;padding-top:20px}
+.guide-complete-mark{font-size:42px;color:var(--gd-accent)}
+.guide-complete h2{font-size:27px;margin:8px 0 13px;color:var(--gd-text)}
+.guide-complete p{color:var(--gd-muted);line-height:1.7}
+.guide-rating{margin-top:22px;padding-top:16px;border-top:1px solid var(--gd-line)}
+.guide-rating .guide-action{margin:8px 4px}
+.guide-setting{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--gd-muted);margin-top:23px}
+.guide-setting input{accent-color:var(--gd-accent)}
+.guide-sr-only{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}
+@media(prefers-color-scheme:dark){.guide-drawer{--gd-bg:#131b25;--gd-panel:#202b37;--gd-line:#415064;--gd-text:#f4f6f8;--gd-muted:#c7d0db;--gd-accent:#d8ad67;color-scheme:dark}.guide-action{color:#1c1a17!important}.guide-footer button.primary{color:#1c1a17}.guide-option[aria-pressed="true"]{background:#33382f}}
+@media(max-width:700px){.guide-section{grid-template-columns:1fr;padding:27px 22px}.guide-open-button{width:100%}.guide-main{padding:19px 17px}.guide-head,.guide-footer{padding-left:17px;padding-right:17px}}
+@media(prefers-reduced-motion:reduce){.guide-open-button{transition:none}}
