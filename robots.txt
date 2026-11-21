@@ -2,4 +2,5 @@ User-agent: *
 Allow: /
 Disallow: /admin.html
 Disallow: /api/server-snapshot
-Sitemap: https://ecuaserver593.vercel.app/sitemap.xml
+Disallow: /api/admin-login
+Sitemap: https://www.ecuaserver.xyz/sitemap.xml
