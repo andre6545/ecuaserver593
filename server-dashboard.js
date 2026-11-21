@@ -6,6 +6,16 @@
   const badge = $('server-status-state');
   if (!badge) return;
   const players = $('server-status-players');
+  const bannerCard = document.querySelector('.banner-live-card');
+  const bannerState = $('banner-server-state');
+  const bannerPlayers = $('banner-server-players');
+  function syncBanner(state, value) {
+    if (!bannerCard || !bannerState || !bannerPlayers) return;
+    bannerCard.dataset.status = state;
+    bannerState.textContent = labels[state] || labels.unavailable;
+    bannerPlayers.textContent = Number.isInteger(value) && value >= 0 ? String(value) : '—';
+  }
+
   const updated = $('server-status-updated');
   const playersField = $('server-players-field');
   const playersSubtitle = $('server-players-subtitle');
@@ -61,6 +71,7 @@
       const state = Object.prototype.hasOwnProperty.call(labels,data.status) ? data.status : 'unavailable';
       badge.dataset.state = state;
       badge.textContent = labels[state];
+      syncBanner(state,data.players);
       showPlayers(data.players);
       uptime.textContent = state === 'online' ? formatUptime(data.uptimeSeconds) : '—';
       const hasCapacity = state === 'online'
@@ -85,6 +96,7 @@
     } catch {
       badge.dataset.state = 'unavailable';
       badge.textContent = 'No disponible';
+      syncBanner('unavailable',null);
       showPlayers(null);
       uptime.textContent = '—';
       capacityText.textContent = 'Capacidad no disponible';
