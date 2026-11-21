@@ -13,9 +13,6 @@
   const updated = $('server-status-updated');
   const refresh = $('server-refresh');
   const uptime = $('server-uptime');
-  const bannerCard = document.querySelector('.banner-live-card');
-  const bannerState = $('banner-server-state');
-  const bannerPlayers = $('banner-server-players');
   const notice = $('server-notice');
   const noticeText = $('server-notice-text');
   const SUPABASE = 'https://oukgdzfhqeygocmxuiwt.supabase.co';
@@ -27,13 +24,6 @@
   };
   let busy = false;
   let lastManual = 0;
-
-  function syncBanner(state, count) {
-    if (!bannerCard || !bannerState || !bannerPlayers) return;
-    bannerCard.dataset.status = state;
-    bannerState.textContent = labels[state] || labels.unavailable;
-    bannerPlayers.textContent = Number.isInteger(count) && count >= 0 ? String(count) : '—';
-  }
 
   function showPlayers(count) {
     if (!Number.isInteger(count) || count < 0) {
@@ -70,7 +60,6 @@
       const state = Object.prototype.hasOwnProperty.call(labels,data.status) ? data.status : 'unavailable';
       badge.dataset.state = state;
       badge.textContent = labels[state];
-      syncBanner(state,data.players);
       showPlayers(data.players);
       uptime.textContent = state === 'online' ? displayUptime(data.uptimeSeconds) : '—';
       if (state === 'unconfigured') {
@@ -85,7 +74,6 @@
     } catch {
       badge.dataset.state = 'unavailable';
       badge.textContent = 'No disponible';
-      syncBanner('unavailable',null);
       showPlayers(null);
       uptime.textContent = '—';
       updated.textContent = 'No fue posible consultar el servidor. Puedes intentarlo de nuevo.';
