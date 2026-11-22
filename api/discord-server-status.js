@@ -31,36 +31,67 @@ async function rpc(name,payload){
   if(!response.ok)throw new Error('state_store_failed');
   return response.json();
 }
+const BRAND = 0xE8B85E;
+const ATS_ID = '85568392936670275';
+function validMetric(n,max=5000){return Number.isInteger(n)&&n>=0&&n<=max?n:null;}
+function uptimeLabel(seconds){
+  const n=validMetric(seconds,315360000);
+  if(n===null)return 'No disponible';
+  const d=Math.floor(n/86400),h=Math.floor(n%86400/3600),m=Math.floor(n%3600/60);
+  return [d?d+' d':null,h?h+' h':null,(!d&&!h||m)?m+' min':null].filter(Boolean).join(' ');
+}
+function rosterLabel(names){
+  if(!Array.isArray(names)||names.length===0)return null;
+  const safe=names.filter(x=>typeof x==='string'&&x.length<=48)
+    .slice(0,8).map(x=>x.replace(/[@\x00-\x1f\x7f\u200b-\u200f]/g,'').replace(/[*_`~|<>]/g,'').trim())
+    .filter(Boolean);
+  return safe.length?safe.map(n=>'• '+n).join('\n').slice(0,850):null;
+}
 function eventEmbed(e){
   const time=typeof e.at==='string'&&!Number.isNaN(Date.parse(e.at))
     ?new Date(e.at).toISOString():new Date().toISOString();
-  const base={
-    footer:{text:'EcuaServer +593 · Registro automático ATS · Datos consultados cada ejecución'},
+  const isOnline=e.type==='server_online';
+  const isOffline=e.type==='server_offline';
+  const increased=e.type==='players_increased';
+  const decreased=e.type==='players_decreased';
+  if(!isOnline&&!isOffline&&!increased&&!decreased)return null;
+  const count=validMetric(e.players);
+  const cap=validMetric(e.capacity);
+  const occupancy=(count===null?'—':String(count))+'/'+(cap&&cap>0?cap:'—');
+  const fields=[
+    {name:'👥 Ocupación del servidor',value:occupancy,inline:true},
+    {name:'⏱️ Tiempo de actividad',value:isOffline?'No disponible':uptimeLabel(e.uptimeSeconds),inline:true},
+    {name:'🆔 Servidor ATS',value:'`'+ATS_ID+'`',inline:false}
+  ];
+  let title,description,color;
+  if(isOnline){
+    title='🟢  SERVIDOR EN LÍNEA';
+    description='**EcuaServer +593** ha iniciado correctamente.\n¡La ruta está abierta para todos! 🇪🇨';
+    color=0x32B67A;
+  } else if(isOffline){
+    title='🔴  SERVIDOR DESCONECTADO';
+    description='**EcuaServer +593** se encuentra fuera de línea.\nVolveremos a la carretera pronto.';
+    color=0xE45C65;
+  } else {
+    const amount=Math.abs(Number(e.delta)),before=validMetric(e.previousPlayers),after=validMetric(e.players);
+    if(!Number.isInteger(amount)||amount<1||amount>5000||before===null||after===null)return null;
+    title=increased?'🚛  NUEVA ACTIVIDAD EN RUTA':'🚪  MOVIMIENTO DE JUGADORES';
+    description=increased
+      ?'**+'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+' al servidor.'
+      :'**−'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+' (variación neta).';
+    color=increased?BRAND:0x6E9FCE;
+    fields.unshift({name:'📊 Antes → Ahora',value:String(before)+' → **'+String(after)+'**',inline:false});
+    const arrivals=rosterLabel(e.playerNamesIn),departures=rosterLabel(e.playerNamesOut);
+    if(arrivals)fields.push({name:'🟢 Jugadores detectados al entrar',value:arrivals,inline:false});
+    if(departures)fields.push({name:'🔵 Jugadores detectados al salir',value:departures,inline:false});
+    if(!arrivals&&!departures)fields.push({name:'ℹ️ Registro',value:'Cambio neto de jugadores; nombres no disponibles en la API.',inline:false});
+  }
+  return {
+    author:{name:'ECUASERVER +593  •  CENTRO DE OPERACIONES'},
+    title,description,color,fields,
+    footer:{text:'🇪🇨 ECUASERVER +593  •  ATS EVENT LOG  •  Actualización cada minuto'},
     timestamp:time
   };
-  switch(e.type){
-    case 'server_online':return {...base,title:'🟢 Servidor ATS encendido',
-      description:'**EcuaServer +593** está en línea. ¡Buenas rutas! 🚛',color:0x2ecc71};
-    case 'server_offline':return {...base,title:'🔴 Servidor ATS desconectado',
-      description:'**EcuaServer +593** está fuera de línea.',color:0xe45460};
-    case 'players_increased':
-    case 'players_decreased':{
-      const increase=e.type==='players_increased';
-      const amount=Math.abs(Number(e.delta));
-      const before=Number(e.previousPlayers),after=Number(e.players);
-      if(!Number.isInteger(amount)||amount<1||amount>5000||
-        !Number.isInteger(before)||before<0||!Number.isInteger(after)||after<0)return null;
-      return {...base,title:increase?'🚛 Aumentó la cantidad de jugadores':'🚪 Disminuyó la cantidad de jugadores',
-        description:(increase?'📈 **+':'📉 **−')+amount+'** jugador'+(amount===1?'':'es')+
-          ' conectado'+(amount===1?'':'s')+' (cambio neto).',
-        color:increase?0xe8b85e:0x688bbf,
-        fields:[{name:'Antes',value:String(before),inline:true},
-          {name:'Ahora',value:String(after),inline:true}],
-        footer:{text:'EcuaServer +593 · Cambios netos: no identifica usuarios individuales'},
-        timestamp:time};
-    }
-    default:return null;
-  }
 }
 async function send(webhook,embed){
   const response=await fetch(webhook+'?wait=true',{
@@ -94,9 +125,11 @@ export default async function handler(req,res){
     return res.status(503).json({ok:false,error:'integration_not_configured'});
 
   try {
-    const sample=await queryStatus();
-    const queue=await rpc('ecuaserver_discord_log_poll',{
-      p_secret:monitorSecret,p_status:sample.status,p_players:sample.players
+    const sample=await queryStatus({includePlayerNames:true});
+    const queue=await rpc('ecuaserver_discord_log_poll_v2',{
+      p_secret:monitorSecret,p_status:sample.status,p_players:sample.players,
+      p_capacity:sample.capacity,p_uptime_seconds:sample.uptimeSeconds,
+      p_player_names:sample.playerNames??null
     });
     if(!Array.isArray(queue))throw new Error('invalid_event_queue');
     let sent=0;
