@@ -31,67 +31,59 @@ async function rpc(name,payload){
   if(!response.ok)throw new Error('state_store_failed');
   return response.json();
 }
-const BRAND = 0xE8B85E;
-function validMetric(n,max=5000){return Number.isInteger(n)&&n>=0&&n<=max?n:null;}
-function uptimeLabel(seconds){
-  const n=validMetric(seconds,315360000);
-  if(n===null)return 'No disponible';
-  const d=Math.floor(n/86400),h=Math.floor(n%86400/3600),m=Math.floor(n%3600/60);
-  return [d?d+' d':null,h?h+' h':null,(!d&&!h||m)?m+' min':null].filter(Boolean).join(' ');
-}
-function safePlayerName(raw){
+// Plain-text ATS join/leave notices. Never guess the server capacity.
+function count(n){return Number.isInteger(n)&&n>=0&&n<=5000?n:null;}
+function cleanName(raw){
   if(typeof raw!=='string'||raw.length>48)return null;
   const name=raw.replace(/[@\x00-\x1f\x7f\u200b-\u200f]/g,'')
     .replace(/[*_`~|<>\\]/g,'').trim();
-  return name.length?name:null;
+  return name||null;
 }
-function playerLines(names,verb){
-  if(!Array.isArray(names))return [];
-  return names.slice(0,20).map(safePlayerName).filter(Boolean)
-    .map(name=>'**'+name+'**, '+verb+' al servidor.');
+function formatOccupancy(connected,capacity){
+  const max=count(capacity);
+  return '('+(count(connected)??'—')+'/'+(max!==null&&max>0?max:'—')+')';
 }
-function eventEmbed(e){
-  const time=typeof e.at==='string'&&!Number.isNaN(Date.parse(e.at))
-    ?new Date(e.at).toISOString():new Date().toISOString();
-  const isOnline=e.type==='server_online';
-  const isOffline=e.type==='server_offline';
-  const increased=e.type==='players_increased';
-  const decreased=e.type==='players_decreased';
-  if(!isOnline&&!isOffline&&!increased&&!decreased)return null;
-  const count=validMetric(e.players),cap=validMetric(e.capacity);
-  const fields=[
-    {name:'👥 Jugadores',value:(count===null?'—':String(count))+'/'+(cap&&cap>0?cap:'—'),inline:true},
-    {name:'⏱️ Tiempo activo',value:isOffline?'No disponible':uptimeLabel(e.uptimeSeconds),inline:true}
-  ];
-  let description,color,title;
-  if(isOnline){
-    title='🟢 Servidor en línea';
-    description='**EcuaServer +593** está disponible. ¡Buenas rutas! 🇪🇨';
-    color=0x32B67A;
-  }else if(isOffline){
-    title='🔴 Servidor desconectado';
-    description='**EcuaServer +593** está fuera de línea.';
-    color=0xE45C65;
-  }else{
-    const amount=Math.abs(Number(e.delta));
-    if(!Number.isInteger(amount)||amount<1||amount>5000||
-      validMetric(e.previousPlayers)===null||count===null)return null;
-    const entered=playerLines(e.playerNamesIn,'entró');
-    const exited=playerLines(e.playerNamesOut,'salió');
-    // Name-based notices only use validated differences between two complete rosters.
-    // A single interval may contain both entries and exits.
-    const lines=[...entered,...exited];
-    description=lines.length?lines.join('\n')
-      :(increased?'🚛 **+'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+'.'
-        :'🚪 **−'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+' (cambio neto).');
-    color=increased?BRAND:0x6E9FCE;
+function eventMessages(e){
+  // User requested only join/leave logs; suppress status-only notifications.
+  if(e.type!=='players_increased'&&e.type!=='players_decreased')return [];
+  const before=count(e.previousPlayers),after=count(e.players);
+  if(before===null||after===null)return [];
+  const entered=Array.isArray(e.playerNamesIn)?e.playerNamesIn.map(cleanName).filter(Boolean):[];
+  const departed=Array.isArray(e.playerNamesOut)?e.playerNamesOut.map(cleanName).filter(Boolean):[];
+  const capacity=e.capacity;
+  const result=[];
+  if(entered.length||departed.length){
+    // Counts after each named movement are derived from the two observed rosters.
+    // When both entry and exit occurred between polls, exact order is unknown:
+    // display the final observed occupancy rather than invent event ordering.
+    const mixed=entered.length>0&&departed.length>0;
+    let occupancy=before;
+    for(const name of departed){
+      if(!mixed)occupancy=Math.max(0,occupancy-1);
+      result.push('⬅️ *'+name+'*, salió del servidor. '+formatOccupancy(mixed?after:occupancy,capacity));
+    }
+    for(const name of entered){
+      if(!mixed)occupancy++;
+      result.push('➡️ *'+name+'*, entró al servidor. '+formatOccupancy(mixed?after:occupancy,capacity));
+    }
+    return result;
   }
-  return { ...(title?{title}:{}),description,color,fields,timestamp:time };
+  // No reliable names: keep a truthful count-change notification.
+  const delta=after-before;
+  if(delta===0)return [];
+  return [(delta>0?'➡️ Entraron ':'⬅️ Salieron ')+Math.abs(delta)+
+    ' jugador'+(Math.abs(delta)===1?'':'es')+' del servidor. '+formatOccupancy(after,capacity)];
 }
-async function send(webhook,embed){
+async function send(webhook,content){
   const response=await fetch(webhook+'?wait=true',{
-    method:'POST',headers:{'Content-Type':'application/json','Accept':'application/json'},
-    body:JSON.stringify({username:'EcuaServer Logs',allowed_mentions:{parse:[]},embeds:[embed]}),
+    method:'POST',
+    headers:{'Content-Type':'application/json','Accept':'application/json'},
+    body:JSON.stringify({
+      username:'EcuaServer Logs',
+      content,
+      allowed_mentions:{parse:[]},
+      embeds:[]
+    }),
     signal:AbortSignal.timeout(12000)
   });
   if(!response.ok){
@@ -99,9 +91,8 @@ async function send(webhook,embed){
     err.status=response.status;
     throw err;
   }
-  // Discord must confirm creation before the event is marked delivered.
   const message=await response.json();
-  if(!/^\d{17,22}$/.test(String(message?.id||'')))throw new Error('discord_message_not_confirmed');
+  if(!/^\\d{17,22}$/.test(String(message?.id||'')))throw new Error('discord_message_not_confirmed');
 }
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
@@ -129,12 +120,13 @@ export default async function handler(req,res){
     if(!Array.isArray(queue))throw new Error('invalid_event_queue');
     let sent=0;
     for(const e of queue.slice(0,10)){
-      const embed=eventEmbed(e);
-      if(!embed||!/^[0-9a-f-]{36}$/i.test(String(e.id||'')))
-        throw new Error('invalid_event');
-      await send(webhook,embed);
+      if(!/^[0-9a-f-]{36}$/i.test(String(e.id||'')))throw new Error('invalid_event');
+      const messages=eventMessages(e);
+      for(const content of messages){
+        await send(webhook,content);
+        sent++;
+      }
       await rpc('ecuaserver_discord_log_ack',{p_secret:monitorSecret,p_id:e.id});
-      sent++;
     }
     return res.status(200).json({ok:true,mode:'event_log',sent,
       status:sample.status,players:sample.players??null});
