@@ -25,31 +25,47 @@ The first sync establishes a baseline and posts **no fabricated events**. Unknow
 - Legacy `DISCORD_STATUS_MESSAGE_ID` remains stored for reference but is **not used by the event logger**.
 - No changes to the ATS hosting, public server status API, gallery, guide, admin, or their data tables.
 
-## Automation still required
+## Automatic synchronization — ACTIVE
 
-**The 1-minute external scheduler is not connected yet.** Vercel Hobby only supports daily native Cron Jobs. Configure a scheduler that supports every 60 seconds:
+The project uses **Supabase Cron**, not cron-job.org or Vercel Hobby Cron. The existing Supabase installation already had `pg_cron`, `pg_net`, and Vault installed. The one-minute job was activated and verified.
 
-| Setting | Value |
-|---|---|
-| Name | EcuaServer ATS Discord Events |
-| HTTP method | POST |
-| URL | `https://www.ecuaserver.xyz/api/discord-server-status` |
-| Interval | Every minute |
-| Header | `Authorization: Bearer <DISCORD_SYNC_SECRET>` |
-| Optional header | `Content-Type: application/json` |
+- Cron name: `ecuaserver-discord-logs-every-minute`
+- Schedule: `* * * * *` (every minute)
+- Endpoint: `POST https://www.ecuaserver.xyz/api/discord-server-status`
+- Authorization: `Bearer` token fetched at execution time from **Supabase Vault** secret named `ecuaserver_discord_sync_secret`.
+- The matching `DISCORD_SYNC_SECRET` in **Vercel Production** was rotated to a fresh high-entropy value and production redeployed.
+- The cron job stores **only a Vault reference**, never the plaintext credential.
+- Existing cron job `ecuaserver-status-every-five-minutes` is still active and unchanged.
 
-Read the value of `DISCORD_SYNC_SECRET` securely from Vercel Production. Never paste the key or webhook URL into public chat, GitHub or an issue.
+Initial smoke test through `net.http_post` returned **HTTP 200** and `{"ok":true,"mode":"event_log","sent":1,"status":"online","players":2}`; one genuine count-delta notification was delivered.
 
-### Execution
+Verify status in Supabase SQL editor:
 
-1. The function verifies the Bearer token.
-2. A current BisectHosting sample is obtained.
-3. A transactional, persistent Supabase function computes changes against previous readings.
-4. Any queued events are sent to Discord as new messages (with `allowed_mentions` disabled).
-5. Successfully delivered events are acknowledged.
-6. If Discord fails, undelivered events remain queued for a later execution.
+```sql
+select jobname, schedule, active
+from cron.job
+where jobname in (
+ 'ecuaserver-discord-logs-every-minute',
+ 'ecuaserver-status-every-five-minutes'
+);
+```
 
-Rare duplicate notifications are possible when Discord confirms creation but the ACK request fails; this is an at-least-once queue. The queue is isolated from other site systems.
+To pause this log scheduler safely without deleting it:
+
+```sql
+update cron.job set active=false
+where jobname='ecuaserver-discord-logs-every-minute';
+```
+
+To restart after a pause:
+
+```sql
+update cron.job set active=true
+where jobname='ecuaserver-discord-logs-every-minute';
+```
+
+Check HTTP responses in `net._http_response` (short retention) and `cron.job_run_details` (scheduled execution status).
+
 
 ## Previously published message
 
