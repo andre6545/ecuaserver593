@@ -1,40 +1,71 @@
-# EcuaServer +593 — ATS → Discord Monitor
+# EcuaServer +593 — Discord event log (ATS)
 
-## Current status
+## Current mode
 
-- **Initial message published and verified on Discord.**
-- Permanent Discord message ID: `1573864286378528821`.
-- Vercel Production variables configured: `DISCORD_STATUS_WEBHOOK_URL`, `DISCORD_SYNC_SECRET`, and `DISCORD_STATUS_MESSAGE_ID`.
-- Production sync endpoint: `https://www.ecuaserver.xyz/api/discord-server-status` (authenticated POST).
-- Manual editing test succeeded: server status returned `online`, players `0` at the time of the test.
-- Temporary bootstrap API endpoint removed and its nonce revoked.
-- **One-minute automatic scheduler is not configured yet.** Vercel Hobby cannot run a one-minute native Cron Job.
+**Event log** replaced the previous edited-message monitor in `api/discord-server-status.js`. Each confirmed change creates a **new message** in the same Discord webhook channel.
 
-## Enable automatic updates every minute
+Event types:
 
-Configure an external scheduler such as cron-job.org:
+- `server_online`: confirmed transition from offline to online.
+- `server_offline`: confirmed transition from online to offline.
+- `players_increased`: online-player **net count** increased compared to a recent sample.
+- `players_decreased`: online-player **net count** decreased compared to a recent sample.
+
+**Important limitation:** the existing BisectHosting integration provides a reliable **player count**, but not validated individual player identities. A +1/-1 change suggests a join/leave; however multiple joins/leaves between polls may cancel out and not produce an event. The log intentionally reports net count changes rather than falsely naming individual players.
+
+The first sync establishes a baseline and posts **no fabricated events**. Unknown API states do not trigger a false offline alert. A loss of source data resets the player-count baseline.
+
+## Architecture
+
+- Existing BisectHosting query: `api/server-status.js` (`queryStatus()`).
+- Authenticated logger endpoint: `POST https://www.ecuaserver.xyz/api/discord-server-status`.
+- Isolated Supabase private tables: `private.ecuaserver_discord_log_state` and `private.ecuaserver_discord_log_events`.
+- Authenticated RPC functions: `ecuaserver_discord_log_poll` and `ecuaserver_discord_log_ack`, protected by the existing monitor secret hash.
+- Existing Discord webhook URL and strong sync secret remain in Vercel encrypted Production variables.
+- Legacy `DISCORD_STATUS_MESSAGE_ID` remains stored for reference but is **not used by the event logger**.
+- No changes to the ATS hosting, public server status API, gallery, guide, admin, or their data tables.
+
+## Automation still required
+
+**The 1-minute external scheduler is not connected yet.** Vercel Hobby only supports daily native Cron Jobs. Configure a scheduler that supports every 60 seconds:
 
 | Setting | Value |
 |---|---|
-| Name | EcuaServer ATS Discord Monitor |
-| Method | POST |
+| Name | EcuaServer ATS Discord Events |
+| HTTP method | POST |
 | URL | `https://www.ecuaserver.xyz/api/discord-server-status` |
-| Interval | Every 1 minute |
-| Header | `Authorization: Bearer <value of DISCORD_SYNC_SECRET from Vercel>` |
+| Interval | Every minute |
+| Header | `Authorization: Bearer <DISCORD_SYNC_SECRET>` |
 | Optional header | `Content-Type: application/json` |
 
-The scheduler must have a valid copy of the Production `DISCORD_SYNC_SECRET`. Store it privately; it should never appear in public repositories or screenshots.
+Read the value of `DISCORD_SYNC_SECRET` securely from Vercel Production. Never paste the key or webhook URL into public chat, GitHub or an issue.
 
-The webhook and message ID are already saved in Vercel. **Do not run the old initialization instructions again**, as this will create duplicates. A one-time initialize route is intentionally no longer available.
+### Execution
 
-## Expected response
+1. The function verifies the Bearer token.
+2. A current BisectHosting sample is obtained.
+3. A transactional, persistent Supabase function computes changes against previous readings.
+4. Any queued events are sent to Discord as new messages (with `allowed_mentions` disabled).
+5. Successfully delivered events are acknowledged.
+6. If Discord fails, undelivered events remain queued for a later execution.
 
-`{"ok":true,"updated":true,"status":"online","players":0}` is an illustrative shape. Actual values reflect live BisectHosting data.
+Rare duplicate notifications are possible when Discord confirms creation but the ACK request fails; this is an at-least-once queue. The queue is isolated from other site systems.
 
-The backend's `queryStatus()` continues to operate unchanged. Missing player data is reported as unavailable instead of fabricated.
+## Previously published message
 
-## Security
+The legacy status-card message ID is `1573864286378528821`. The new logger does not edit this message. It can be manually deleted or archived in Discord to avoid confusion.
 
-The webhook URL was shared in chat; regenerate it in Discord when practical and update the Vercel Production variable, then redeploy. A changed webhook may not have permission to edit a message created by the old webhook. If rotating the webhook, create a new initial message with the new webhook and replace the message ID, preferably under a controlled migration procedure.
+## Security recommendation
 
-The Vercel sync secret is high-entropy and is separate from the short secret originally provided by the user.
+The Discord webhook URL was shared in a conversation. Rotate it in Discord and update the Vercel variable when practical; rotating webhooks requires a careful switch so existing messages are not assumed editable by the replacement webhook.
+
+## Test plan
+
+- GET → 405; POST without Bearer → 401.
+- First authenticated POST → baseline, `sent:0`.
+- Repeat same state/count → no new Discord message.
+- Change state offline ↔ online → one event message.
+- Count change while online within 3 minutes → count-delta event message.
+- Unknown player count → no false join/leave alert.
+- API outage → no false offline alert.
+- Discord outage → queued event retained until next execution.
