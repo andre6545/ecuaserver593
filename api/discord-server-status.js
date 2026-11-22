@@ -32,7 +32,6 @@ async function rpc(name,payload){
   return response.json();
 }
 const BRAND = 0xE8B85E;
-const ATS_ID = '85568392936670275';
 function validMetric(n,max=5000){return Number.isInteger(n)&&n>=0&&n<=max?n:null;}
 function uptimeLabel(seconds){
   const n=validMetric(seconds,315360000);
@@ -40,12 +39,16 @@ function uptimeLabel(seconds){
   const d=Math.floor(n/86400),h=Math.floor(n%86400/3600),m=Math.floor(n%3600/60);
   return [d?d+' d':null,h?h+' h':null,(!d&&!h||m)?m+' min':null].filter(Boolean).join(' ');
 }
-function rosterLabel(names){
-  if(!Array.isArray(names)||names.length===0)return null;
-  const safe=names.filter(x=>typeof x==='string'&&x.length<=48)
-    .slice(0,8).map(x=>x.replace(/[@\x00-\x1f\x7f\u200b-\u200f]/g,'').replace(/[*_`~|<>]/g,'').trim())
-    .filter(Boolean);
-  return safe.length?safe.map(n=>'• '+n).join('\n').slice(0,850):null;
+function safePlayerName(raw){
+  if(typeof raw!=='string'||raw.length>48)return null;
+  const name=raw.replace(/[@\x00-\x1f\x7f\u200b-\u200f]/g,'')
+    .replace(/[*_`~|<>\\]/g,'').trim();
+  return name.length?name:null;
+}
+function playerLines(names,verb){
+  if(!Array.isArray(names))return [];
+  return names.slice(0,20).map(safePlayerName).filter(Boolean)
+    .map(name=>'**'+name+'**, '+verb+' al servidor.');
 }
 function eventEmbed(e){
   const time=typeof e.at==='string'&&!Number.isNaN(Date.parse(e.at))
@@ -55,43 +58,35 @@ function eventEmbed(e){
   const increased=e.type==='players_increased';
   const decreased=e.type==='players_decreased';
   if(!isOnline&&!isOffline&&!increased&&!decreased)return null;
-  const count=validMetric(e.players);
-  const cap=validMetric(e.capacity);
-  const occupancy=(count===null?'—':String(count))+'/'+(cap&&cap>0?cap:'—');
+  const count=validMetric(e.players),cap=validMetric(e.capacity);
   const fields=[
-    {name:'👥 Ocupación del servidor',value:occupancy,inline:true},
-    {name:'⏱️ Tiempo de actividad',value:isOffline?'No disponible':uptimeLabel(e.uptimeSeconds),inline:true},
-    {name:'🆔 Servidor ATS',value:'`'+ATS_ID+'`',inline:false}
+    {name:'👥 Jugadores',value:(count===null?'—':String(count))+'/'+(cap&&cap>0?cap:'—'),inline:true},
+    {name:'⏱️ Tiempo activo',value:isOffline?'No disponible':uptimeLabel(e.uptimeSeconds),inline:true}
   ];
-  let title,description,color;
+  let description,color,title;
   if(isOnline){
-    title='🟢  SERVIDOR EN LÍNEA';
-    description='**EcuaServer +593** ha iniciado correctamente.\n¡La ruta está abierta para todos! 🇪🇨';
+    title='🟢 Servidor en línea';
+    description='**EcuaServer +593** está disponible. ¡Buenas rutas! 🇪🇨';
     color=0x32B67A;
-  } else if(isOffline){
-    title='🔴  SERVIDOR DESCONECTADO';
-    description='**EcuaServer +593** se encuentra fuera de línea.\nVolveremos a la carretera pronto.';
+  }else if(isOffline){
+    title='🔴 Servidor desconectado';
+    description='**EcuaServer +593** está fuera de línea.';
     color=0xE45C65;
-  } else {
-    const amount=Math.abs(Number(e.delta)),before=validMetric(e.previousPlayers),after=validMetric(e.players);
-    if(!Number.isInteger(amount)||amount<1||amount>5000||before===null||after===null)return null;
-    title=increased?'🚛  NUEVA ACTIVIDAD EN RUTA':'🚪  MOVIMIENTO DE JUGADORES';
-    description=increased
-      ?'**+'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+' al servidor.'
-      :'**−'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+' (variación neta).';
+  }else{
+    const amount=Math.abs(Number(e.delta));
+    if(!Number.isInteger(amount)||amount<1||amount>5000||
+      validMetric(e.previousPlayers)===null||count===null)return null;
+    const entered=playerLines(e.playerNamesIn,'entró');
+    const exited=playerLines(e.playerNamesOut,'salió');
+    // Name-based notices only use validated differences between two complete rosters.
+    // A single interval may contain both entries and exits.
+    const lines=[...entered,...exited];
+    description=lines.length?lines.join('\n')
+      :(increased?'🚛 **+'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+'.'
+        :'🚪 **−'+amount+'** jugador'+(amount===1?'':'es')+' conectado'+(amount===1?'':'s')+' (cambio neto).');
     color=increased?BRAND:0x6E9FCE;
-    fields.unshift({name:'📊 Antes → Ahora',value:String(before)+' → **'+String(after)+'**',inline:false});
-    const arrivals=rosterLabel(e.playerNamesIn),departures=rosterLabel(e.playerNamesOut);
-    if(arrivals)fields.push({name:'🟢 Jugadores detectados al entrar',value:arrivals,inline:false});
-    if(departures)fields.push({name:'🔵 Jugadores detectados al salir',value:departures,inline:false});
-    if(!arrivals&&!departures)fields.push({name:'ℹ️ Registro',value:'Cambio neto de jugadores; nombres no disponibles en la API.',inline:false});
   }
-  return {
-    author:{name:'ECUASERVER +593  •  CENTRO DE OPERACIONES'},
-    title,description,color,fields,
-    footer:{text:'🇪🇨 ECUASERVER +593  •  ATS EVENT LOG  •  Actualización cada minuto'},
-    timestamp:time
-  };
+  return { ...(title?{title}:{}),description,color,fields,timestamp:time };
 }
 async function send(webhook,embed){
   const response=await fetch(webhook+'?wait=true',{
