@@ -13,7 +13,24 @@ async function getJSON(path, token) {
   return r.json();
 }
 
-export async function queryStatus() {
+function verifiedPlayerNames(data, expectedCount) {
+  // Only a complete, distinct roster is eligible for Discord event labels.
+  const roster = Array.isArray(data?.data) ? data.data
+    : Array.isArray(data?.attributes?.players) ? data.attributes.players : null;
+  if (!roster || !Number.isInteger(expectedCount) || roster.length !== expectedCount ||
+      roster.length > 128) return null;
+  const names = roster.map(item => {
+    if (!item || typeof item !== 'object') return null;
+    const a = item.attributes && typeof item.attributes === 'object' ? item.attributes : item;
+    const name = a.name ?? a.username ?? a.player_name ?? a.display_name;
+    return typeof name === 'string' ? name.trim() : null;
+  });
+  if (names.some(n => !n || n.length > 48 || /[\x00-\x1f\x7f]/.test(n))) return null;
+  if (new Set(names.map(n => n.toLocaleLowerCase('en'))).size !== names.length) return null;
+  return names;
+}
+
+export async function queryStatus({ includePlayerNames = false } = {}) {
   const token = process.env.BISECT_API_TOKEN;
   const id = process.env.BISECT_SERVER_ID;
   const fallback = { status:'unavailable', players:null, uptimeSeconds:null, capacity:null, checkedAt:null };
@@ -32,7 +49,7 @@ export async function queryStatus() {
     const uptimeSeconds = status === 'online' && Number.isFinite(uptimeMs) && uptimeMs >= 0
       ? validInt(Math.floor(uptimeMs / 1000), 315360000) : null;
 
-    let players = null, capacity = null;
+    let players = null, capacity = null, playerNames = null;
     if (status === 'online') {
       const [online, details] = await Promise.allSettled([
         getJSON(url + '/player/online', token),
@@ -43,6 +60,7 @@ export async function queryStatus() {
         if (Array.isArray(data?.data)) players = validInt(data.data.length, 5000);
         else if (Array.isArray(data?.attributes?.players)) players = validInt(data.attributes.players.length, 5000);
         else players = validInt(data?.attributes?.online_players, 5000);
+        if (includePlayerNames) playerNames = verifiedPlayerNames(data, players);
       }
       if (details.status === 'fulfilled') {
         const b = details.value?.attributes || {};
@@ -54,7 +72,8 @@ export async function queryStatus() {
         }
       }
     }
-    return { status, players, uptimeSeconds, capacity, checkedAt:new Date().toISOString() };
+    return { status, players, uptimeSeconds, capacity, checkedAt:new Date().toISOString(),
+      ...(includePlayerNames ? { playerNames } : {}) };
   } catch {
     return fallback;
   }
