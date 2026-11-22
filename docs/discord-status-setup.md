@@ -85,3 +85,13 @@ The Discord webhook URL was shared in a conversation. Rotate it in Discord and u
 - Unknown player count → no false join/leave alert.
 - API outage → no false offline alert.
 - Discord outage → queued event retained until next execution.
+
+## Premium Discord embeds (November 2026)
+
+- Each event uses a branded **EcuaServer +593 / Centro de operaciones** embed with distinct colors, timestamp, occupancy and uptime.
+- Occupancy uses the **confirmed** BisectHosting capacity. If the hosting API does not provide it, the message shows `2/—`, **not** an invented `2/128`.
+- Uptime is read from BisectHosting's live resource uptime; offline events display `No disponible`.
+- The logger now requests a **private optional** complete roster from the same `/player/online` response used to count players. The public `/api/server-status` response still does not expose names.
+- When a full valid roster exists in two consecutive samples, the log may display verified display-name additions and removals; otherwise it reports only net count changes. If one player enters and another leaves within the same minute, the unchanged count is **not** reported as an individual event.
+- Supabase stores private player roster snapshots and event metrics in separate `private.ecuaserver_discord_log_*` tables. No existing site tables or BisectHosting configuration were modified.
+- The scheduled job remains `ecuaserver-discord-logs-every-minute`.
