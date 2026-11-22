@@ -15,11 +15,13 @@ export default async function handler(req,res){
   if(!secureCompare(req.query?.nonce,process.env.DISCORD_BOOTSTRAP_NONCE)){
     return res.status(404).json({ok:false,error:'not_found'});
   }
-  if(process.env.DISCORD_STATUS_MESSAGE_ID)return res.status(409).json({ok:false,error:'already_initialized'});
+  const initialized=Boolean(process.env.DISCORD_STATUS_MESSAGE_ID);
+  if(initialized && req.query?.mode!=='verify')return res.status(409).json({ok:false,error:'already_initialized'});
+  if(!initialized && req.query?.mode==='verify')return res.status(409).json({ok:false,error:'not_initialized'});
   if(!process.env.DISCORD_SYNC_SECRET)return res.status(503).json({ok:false,error:'no_sync_secret'});
   try{
     const origin='https://www.ecuaserver.xyz';
-    const response=await fetch(origin+'/api/discord-server-status?initialize=1',{
+    const response=await fetch(origin+'/api/discord-server-status'+(initialized?'':'?initialize=1'),{
       method:'POST',
       headers:{Authorization:'Bearer '+process.env.DISCORD_SYNC_SECRET,'Content-Type':'application/json'},
       signal:AbortSignal.timeout(22000)
