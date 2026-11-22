@@ -44,7 +44,9 @@ function formatOccupancy(connected,capacity){
   return '('+(count(connected)??'—')+'/'+(max!==null&&max>0?max:'—')+')';
 }
 function eventMessages(e){
-  // User requested only join/leave logs; suppress status-only notifications.
+  // Preserve online/offline alerts as plain-text Discord messages.
+  if(e.type==='server_online')return ['🟢 🚚 El servidor ATS está en línea. ¡Buenas rutas!'];
+  if(e.type==='server_offline')return ['🔴 🛣️ El servidor ATS está fuera de línea.'];
   if(e.type!=='players_increased'&&e.type!=='players_decreased')return [];
   const before=count(e.previousPlayers),after=count(e.players);
   if(before===null||after===null)return [];
@@ -60,18 +62,18 @@ function eventMessages(e){
     let occupancy=before;
     for(const name of departed){
       if(!mixed)occupancy=Math.max(0,occupancy-1);
-      result.push('⬅️ *'+name+'*, salió del servidor. '+formatOccupancy(mixed?after:occupancy,capacity));
+      result.push('🔴 🛣️ **'+name+'** terminó su ruta. '+formatOccupancy(mixed?after:occupancy,capacity));
     }
     for(const name of entered){
       if(!mixed)occupancy++;
-      result.push('➡️ *'+name+'*, entró al servidor. '+formatOccupancy(mixed?after:occupancy,capacity));
+      result.push('🟢 🚚 **'+name+'** acaba de entrar a la ruta. '+formatOccupancy(mixed?after:occupancy,capacity));
     }
     return result;
   }
   // No reliable names: keep a truthful count-change notification.
   const delta=after-before;
   if(delta===0)return [];
-  return [(delta>0?'➡️ Entraron ':'⬅️ Salieron ')+Math.abs(delta)+
+  return [(delta>0?'🟢 🚚 Entraron ':'🔴 🛣️ Salieron ')+Math.abs(delta)+
     ' jugador'+(Math.abs(delta)===1?'':'es')+' del servidor. '+formatOccupancy(after,capacity)];
 }
 async function send(webhook,content){
