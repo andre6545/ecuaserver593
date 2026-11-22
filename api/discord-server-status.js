@@ -92,7 +92,7 @@ async function send(webhook,content){
     throw err;
   }
   const message=await response.json();
-  if(!/^\\d{17,22}$/.test(String(message?.id||'')))throw new Error('discord_message_not_confirmed');
+  if(!/^\d{17,22}$/.test(String(message?.id||'')))throw new Error('discord_message_not_confirmed');
 }
 export default async function handler(req,res){
   res.setHeader('Cache-Control','no-store');
